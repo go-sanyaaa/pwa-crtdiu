@@ -5,3 +5,4 @@ export const CHECK_TOKEN = 'checkToken'
 
 //
 export const FETCH_NEWS = 'fetchNews'
+export const LOAD_NEWS = 'loadNews'

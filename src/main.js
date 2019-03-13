@@ -21,27 +21,27 @@ if(JwtService.getToken()){
 
 router.beforeEach((to,from,next) => {
   const {title, layout} = to.meta;
-  store.dispatch('common/updateTitle',title)
-  store.dispatch('common/updateLayout',layout)
-
-  if(to.matched.some(record => record.meta.requiresAuth)){
-    if(!store.getters.isAuthenticated){
-      next({
-        name: 'login',
-        // query: {redirect: to.fullPath}
-      })
-    }else{
-      next()
-    }
-  }else {
-    if(to.meta.authClosed && store.getters.isAuthenticated){
-      next({
-        name: 'home'
-      })
-    }else {
-      next()
-    }
-  }
+  next()
+  // store.dispatch('common/updateTitle',title)
+  //
+  // if(to.matched.some(record => record.meta.requiresAuth)){
+  //   if(!store.getters.isAuthenticated){
+  //     next({
+  //       name: 'login',
+  //       // query: {redirect: to.fullPath}
+  //     })
+  //   }else{
+  //     next()
+  //   }
+  // }else {
+  //   if(to.meta.authClosed && store.getters.isAuthenticated){
+  //     next({
+  //       name: 'home'
+  //     })
+  //   }else {
+  //     next()
+  //   }
+  // }
 })
 
 

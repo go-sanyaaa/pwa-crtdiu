@@ -1,11 +1,10 @@
 <template lang="pug">
-    v-layout.column.wrap.justify-center.align-center(v-if="isLoading")
-        v-flex.xs12.sm4.align-self-center
-            v-progress-circular(:size='50'  color="primary" indeterminate)
-    v-layout.row.wrap(v-else)
-        v-flex.xs12.sm4.offset-sm4
-            v-card.mb-4(flat v-for="item in news" :key="item.id")
-                v-img(src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg" height="240px")
+    v-layout
+        v-flex.xs12.sm6.offset-sm3
+            div.text-xs-center.pa-5(v-if="isLoading")
+                v-progress-circular(indeterminate color="primary")
+            v-card.mb-4.elevation-1(v-else v-for="item in news" :key="item.id")
+                v-img(:src="getPostImages(item)" height="240px")
                 v-card-title
                     div
                         div.title.font-weight-black {{item.title.rendered}}
@@ -16,7 +15,7 @@
 
 <script>
     import {mapGetters} from 'vuex'
-    import {FETCH_NEWS} from "../store/actions.type";
+    import {LOAD_NEWS} from "../store/actions.type";
     import moment from 'moment'
 
     export default {
@@ -25,11 +24,21 @@
             ...mapGetters(['news','isLoading'])
         },
         mounted() {
-            this.$store.dispatch(FETCH_NEWS)
+            console.log('created')
+            this.$store.dispatch(LOAD_NEWS)
         },
         methods: {
             getHumanDate(date){
                 return moment(date).locale('ru').format('LLL')
+            },
+            getPostImages(post){
+                if(post.better_featured_image){
+                    var images = post.better_featured_image.media_details.sizes;
+                    var max_size = Object.keys(images).pop()
+                    return images[max_size].source_url
+                }else{
+                    return 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg'
+                }
             }
         }
     }

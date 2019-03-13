@@ -1,6 +1,8 @@
 <template lang="pug">
-    div
-        v-btn() Уведомления
+    v-content
+        v-container
+            div
+                v-btn() Уведомления
 </template>
 
 <script>

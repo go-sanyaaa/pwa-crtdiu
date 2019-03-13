@@ -11,14 +11,8 @@ const ApiService = {
         axios.defaults.headers.common["Authorization"] = `Bearer ${JwtService.getToken()}`;
     },
 
-    get(resource, slug = "") {
-        return axios.get(`${resource}/${slug}`).catch(error => {
-            throw new Error(`[RWV] ApiService ${error}`);
-        });
-    },
-
-    query(resource, params) {
-        return axios.get(resource, params).catch(error => {
+    get(resource, params = "") {
+        return axios.get(`${resource}${params}`).catch(error => {
             throw new Error(`[RWV] ApiService ${error}`);
         });
     },
@@ -32,7 +26,7 @@ export default ApiService;
 
 export const NewsService = {
     query(params={}){
-        return ApiService.query('wp/v2/posts',params)
+        return ApiService.get('wp/v2/posts','')
             .catch(error => {
                 throw new Error(`[RWV] ApiService ${error}`);
             });

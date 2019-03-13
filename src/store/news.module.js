@@ -1,6 +1,6 @@
 import ApiService from '@/common/api.service'
 
-import {FETCH_NEWS} from "./actions.type";
+import {FETCH_NEWS, LOAD_NEWS} from "./actions.type";
 import {FETCH_START, FETCH_END} from "./mutations.type";
 import {NewsService} from "../common/api.service";
 
@@ -23,6 +23,11 @@ export default {
     },
 
     actions: {
+        [LOAD_NEWS](context){
+            if(!context.getters.newsCount){
+                context.dispatch(FETCH_NEWS)
+            }
+        },
         [FETCH_NEWS]({commit}){
             commit(FETCH_START)
             NewsService.query()
@@ -39,6 +44,9 @@ export default {
         },
         isLoading(state){
             return state.isLoading
+        },
+        newsCount(state){
+            return state.news.length
         }
     }
 }

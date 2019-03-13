@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-app#inspire
+    #events
         v-toolbar.elevation-0(app color="primary" fixed dark clipped)
             v-spacer
             v-tabs(color="transparent" fixed-tabs)

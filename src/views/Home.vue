@@ -1,18 +1,19 @@
-<template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<template lang="pug">
+    v-container.fill-height
+        news-cards
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+    import NewsCards from '@/components/NewsCards.vue'
 
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: "Home",
+        components: {
+            NewsCards
+        }
+    }
 </script>
+
+<style scoped>
+
+</style>

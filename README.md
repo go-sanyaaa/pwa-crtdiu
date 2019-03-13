@@ -1,6 +1,11 @@
-# lk-crtdiu
+# PWA ЦРТДиЮ
+> Дипломный проект: "Прогресивное web-приложения для Цетра развития творчества детей и юношества".
 
-## Project setup
+### Демо
+[https://lk.crtdiu-app.ru](https://lk.crtdiu-app.ru)
+
+
+### Project setup
 ```
 npm install
 ```

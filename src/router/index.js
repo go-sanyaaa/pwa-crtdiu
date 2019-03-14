@@ -32,8 +32,9 @@ export default new Router({
             layout: 'DefaultLayout',
             requiresAuth: true,
           },
-          component: function () {
-            return import('../views/Home')
+          components: {
+            default: () => import('@/views/Home'),
+            toolbar: () => import('@/components/Toolbars/HomeToolbar'),
           }
         },
         {
@@ -57,8 +58,9 @@ export default new Router({
             layout: 'DefaultLayout',
             requiresAuth: true,
           },
-          component: function () {
-            return import('../views/Events')
+          components: {
+            default: () => import('@/views/Events'),
+            toolbar: () => import('@/components/Toolbars/EventsToolbar'),
           }
         },
         {

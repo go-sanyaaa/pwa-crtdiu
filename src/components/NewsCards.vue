@@ -3,13 +3,13 @@
         v-flex.xs12.sm6.offset-sm3
             div.text-xs-center.pa-5(v-if="isLoading")
                 v-progress-circular(indeterminate color="primary")
-            v-card.mb-4.elevation-1(v-else v-for="item in news" :key="item.id")
+            v-card.mb-4.elevation-5(v-else v-for="item in news" :key="item.id")
                 v-img(:src="getPostImages(item)" height="240px")
                 v-card-title
-                    div
+                    div.flex
                         div.title.font-weight-black {{item.title.rendered}}
                         span.grey--text.font-weight-light {{getHumanDate(item.date)}}
-                v-card-text
+                v-card-text.pt-0
                     div.text--accent-1(v-html="item.excerpt.rendered")
 </template>
 

@@ -1,6 +1,6 @@
 {
-  "name": "Личный кабинет ЦРТДиЮ",
-  "short_name": "Личный кабинет ЦРТДиЮ",
+  "name": "Центр развития творчества детей и юношества Кировского района г.Кемерово",
+  "short_name": "Центр творчеств",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
@@ -16,5 +16,5 @@
   "start_url": "./",
   "display": "standalone",
   "background_color": "#FFFFFF",
-  "theme_color": "#FFFFFF"
+  "theme_color": "#D50000"
 }

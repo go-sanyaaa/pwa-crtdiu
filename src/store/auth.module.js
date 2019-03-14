@@ -2,12 +2,13 @@ import JwtService from '@/common/jwt.service'
 import ApiService from '@/common/api.service'
 
 import {AUTH_LOGIN, AUTH_LOGOUT, UPDATE_USER, CHECK_TOKEN} from "@/store/actions.type";
-import {SET_TOKEN, PURGE_AUTH, SET_USER} from "@/store/mutations.type";
+import {SET_TOKEN, PURGE_AUTH, SET_USER, SET_ERROR} from "@/store/mutations.type";
 
 const state = {
     isAuthenticated: !!JwtService.getToken(),
     token: '',
-    user: {}
+    user: {},
+    errors: []
 }
 
 const getters = {
@@ -23,18 +24,24 @@ const mutations = {
     },
     [SET_USER](state, user){
         state.user = user;
+        state.errors = []
     },
     [PURGE_AUTH](state){
         state.token = ''
         state.user = {}
+        state.errors = []
         JwtService.destroyToken()
+    },
+    [SET_ERROR](state,errors){
+        state.errors = errors
     }
 }
 
 const actions = {
-    [AUTH_LOGIN](context,payload){
+    [AUTH_LOGIN](context,user){
         return new Promise((res,rej)=>{
-            ApiService.post('jwt-auth/v1/token',{username:'admin',password:'Sasha2403271997'})
+            const {username, password} = user
+            ApiService.post('jwt-auth/v1/token',{username,password})
                 .then(resp => {
                     const token = resp.data.token;
                     context.commit(SET_TOKEN,token)
@@ -44,6 +51,9 @@ const actions = {
                         .then(resp => {
                             res(resp)
                         })
+                })
+                .catch(err => {
+                    context.commit(SET_ERROR,[err.response.data.message])
                 })
         })
     },

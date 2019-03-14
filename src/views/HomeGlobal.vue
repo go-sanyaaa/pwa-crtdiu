@@ -1,13 +1,16 @@
 <template lang="pug">
     v-app#inspire
-        keep-alive
-            router-view
-        v-bottom-nav.elevation-5(app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show")
+        app-header
+            router-view(name='toolbar')
+        v-content
+            v-container
+                router-view
+        v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.xsOnly" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show" style="height: 52px;")
                 v-btn(v-for="menu in bottom_menu"
                     flat color="primary" :value="menu.href" :to="menu.href" :key="menu.href"
                 )
                     span.mt-1 {{menu.name}}
-                    v-badge(v-if="menu.badge" color="red" overlap)
+                    v-badge(v-if="menu.badge" color="accent")
                         template(v-slot:badge)
                             span 3
                         v-icon.ma-0 {{menu.icon}}
@@ -15,8 +18,10 @@
 </template>
 <script>
   import {mapGetters} from 'vuex'
+  import AppHeader from '@/components/AppHeader'
 
-  export default {
+    export default {
+        components: {AppHeader},
         data: function () {
             return {
                 user: {
@@ -38,9 +43,12 @@
                 ]
             }
         },
-      computed: {
+        component: {
+            AppHeader
+        },
+        computed: {
             ...mapGetters(['currentUser']),
-      }
+        }
     }
 </script>
 

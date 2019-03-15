@@ -1,9 +1,6 @@
 <template lang="pug">
-    #app
-        keep-alive
-            router-view
-        <!--keep-alive-->
-            <!--component(:is="component")-->
+    div#app
+        router-view
 </template>
 
 <script>

@@ -8,12 +8,15 @@ const state = {
     isAuthenticated: !!JwtService.getToken(),
     token: '',
     user: {},
-    errors: []
+    errors: false
 }
 
 const getters = {
     isAuthenticated(state) {
         return state.isAuthenticated;
+    },
+    user(state) {
+        return state.user;
     }
 }
 
@@ -24,12 +27,13 @@ const mutations = {
     },
     [SET_USER](state, user){
         state.user = user;
-        state.errors = []
+        state.errors = false
     },
     [PURGE_AUTH](state){
         state.token = ''
         state.user = {}
-        state.errors = []
+        state.errors = false
+        state.isAuthenticated = false
         JwtService.destroyToken()
     },
     [SET_ERROR](state,errors){
@@ -61,12 +65,14 @@ const actions = {
         return new Promise((res,rej)=>{
             ApiService.post('wp/v2/users/me')
                 .then(resp => {
-                    const {id,first_name,last_name,email} = resp.data;
+                    const {id,first_name,last_name,email, avatar_urls, username} = resp.data;
                     const user = {
                         id,
                         first_name,
                         last_name,
-                        email
+                        email,
+                        avatar_urls,
+                        username
                     }
                     context.commit(SET_USER,user)
                     res(resp)
@@ -85,6 +91,12 @@ const actions = {
                     context.commit(PURGE_AUTH)
                     rej(err)
                 })
+        })
+    },
+    [AUTH_LOGOUT](context){
+        return new Promise((res,rej) => {
+            context.commit(PURGE_AUTH)
+            res()
         })
     }
 }

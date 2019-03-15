@@ -1,5 +1,3 @@
-import ApiService from '@/common/api.service'
-
 import {FETCH_NEWS, LOAD_NEWS} from "./actions.type";
 import {FETCH_START, FETCH_END} from "./mutations.type";
 import {NewsService} from "../common/api.service";

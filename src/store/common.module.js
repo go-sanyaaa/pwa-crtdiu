@@ -1,4 +1,3 @@
-//Common State.
 const defaults = {
     title: '',
     layout: 'DefaultLayout'

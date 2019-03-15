@@ -1,13 +1,14 @@
 <template lang="pug">
-    v-layout
-        v-flex.xs12.sm6.offset-sm3
-            div.text-xs-center.pa-5(v-if="isLoading")
-                v-progress-circular(indeterminate color="primary")
-            v-card.mb-4.elevation-5(v-else v-for="item in news" :key="item.id")
-                v-img(:src="getPostImages(item)" height="240px")
-                v-card-title
-                    div.flex
-                        div.title.font-weight-black {{item.title.rendered}}
+    v-layout.row.wrap
+        div.text-xs-center.pa-5(v-if="isLoading")
+            v-progress-circular(indeterminate color="primary")
+        v-flex.xs12.sm6.offset-sm3(v-else v-for="item in news" :key="item.id")
+            v-card
+                router-link(:to="`/events/${item.id}`")
+                    v-img(:src="getPostImages(item)" height="240px")
+                v-card-title(primary-title)
+                    div
+                        router-link(:to="`/events/${item.id}`").title.font-weight-black {{item.title.rendered}}
                         span.grey--text.font-weight-light {{getHumanDate(item.date)}}
                 v-card-text.pt-0
                     div.text--accent-1(v-html="item.excerpt.rendered")
@@ -24,7 +25,6 @@
             ...mapGetters(['news','isLoading'])
         },
         mounted() {
-            console.log('created')
             this.$store.dispatch(LOAD_NEWS)
         },
         methods: {

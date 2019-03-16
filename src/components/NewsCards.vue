@@ -8,10 +8,16 @@
                     v-img(:src="getPostImages(item)" height="240px")
                 v-card-title(primary-title)
                     div
-                        router-link(:to="`/events/${item.id}`").title.font-weight-black {{item.title.rendered}}
+                        router-link(:to="`/events/${item.id}`").title.font-weight-black.grey--text.text--darken-2 {{item.title.rendered}}
+                            br
                         span.grey--text.font-weight-light {{getHumanDate(item.date)}}
-                v-card-text.pt-0
+                v-card-text.py-0
                     div.text--accent-1(v-html="item.excerpt.rendered")
+                v-card-actions.px-3.pb-4
+                    v-chip(flat small outline color="secondary") Академия ЮИД
+                    v-spacer
+                    v-btn(flat small :ripple="{ class: 'red--text' }").body-2.text-none.grey--text.text--darken-1 Поделиться
+                        v-icon(right size="22px") share
 </template>
 
 <script>

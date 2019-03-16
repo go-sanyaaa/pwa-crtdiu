@@ -10,6 +10,7 @@
 
 <script>
     export default {
+        name: 'HomeEvent',
         props: ['id']
     }
 </script>

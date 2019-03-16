@@ -1,51 +1,47 @@
 <template lang="pug">
     v-app#inspire
-        app-header
-            router-view(name='toolbar')
+        v-navigation-drawer(v-if="$vuetify.breakpoint.smAndUp" v-model="drawer" fixed app disable-resize-watcher)
+            v-list
+                v-list-tile(v-for="(item, i) in navMenu" :key="`navitem${i}`" append :to="item.route")
+                    v-list-tile-action
+                        v-icon {{item.icon}}
+                    v-list-tile-content
+                        v-list-tile-title {{item.title}}
+        router-view(name='toolbar')
+            template(#slide-icon)
+                v-toolbar-side-icon(v-if="$vuetify.breakpoint.smAndUp" @click.stop="drawer = !drawer")
         v-content
-            v-container.fluid.grid-list-lg
+            v-container.fluid.grid-list-lg(:px-0="$vuetify.breakpoint.xsOnly")
                 transition
                     router-view
-        v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.xsOnly" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show" style="height: 52px;")
-                v-btn(v-for="menu in bottom_menu"
-                    flat color="primary" :value="menu.href" :to="menu.href" :key="menu.href" :ripple="true"
+        v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.xsOnly" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show" height="52px")
+                v-btn(v-for="menu in navMenu"
+                    flat color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="true"
                 )
-                    span.mt-1 {{menu.name}}
+                    span.mt-1 {{menu.title}}
                     v-badge(v-if="menu.badge" color="accent")
-                        template(v-slot:badge)
+                        template(#badge)
                             span 3
                         v-icon.ma-0 {{menu.icon}}
                     v-icon.ma-0(v-else) {{menu.icon}}
 </template>
 <script>
   import {mapGetters} from 'vuex'
-  import AppHeader from '@/components/AppHeader'
 
     export default {
-        components: {AppHeader},
+        name: 'Home',
         data: function () {
             return {
-                user: {
-                    username: this.$store.getters.user
-                },
                 bottom_nav_show: true,
-                bottom_nav: 'main',
-                bottom_menu: [
-                    {icon: 'view_day', href: '/', name: 'Лента', badge: false},
-                    {icon: 'event', href: '/events', name: 'События', badge: false},
-                    {icon: 'notifications', href: '/notify', name: 'Уведомления', badge: true},
-                    {icon: 'menu', href: '/main', name: 'Еще', badge: false}
-                ],
-                drawerItems: [
-                    {header: 'Меню'},
-                    {title: 'Главная', to:'/', icon:'home'},
-                    {divider: true, inset: true},
-                    {title: 'crtdiu-app.ru', href:true, to:'https://crtdiu-app.ru', icon:'link'}
+                bottom_nav: '',
+                drawer: this.$vuetify.breakpoint.lgAndUp,
+                navMenu: [
+                    {icon: 'web_asset', route: '/', title: 'Лента', badge: 0},
+                    {icon: 'event', route: '/events', title: 'События', badge: 0},
+                    {icon: 'notifications', route: '/notify', title: 'Уведомления', badge: 4},
+                    {icon: 'menu', route: '/main', title: 'Еще', badge: 0}
                 ]
             }
-        },
-        component: {
-            AppHeader
         },
         computed: {
             ...mapGetters(['currentUser']),

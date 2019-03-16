@@ -1,14 +1,11 @@
 <template lang="pug">
     v-toolbar.elevation-0(app dark tabs clipped color="primary" height="52px" prominent)
         slot(name='slide-icon')
-        v-scroll-x-transition(hide-on-leave)
-            v-btn(icon @click.stop="$router.go(-1)")
-                v-icon arrow_back
 </template>
 
 <script>
     export default {
-        name: "HomeEventToolbar"
+        name: "HomeDefaultToolbar"
     }
 </script>
 

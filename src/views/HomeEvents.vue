@@ -12,5 +12,7 @@
 </template>
 
 <script>
-
+    export default {
+        name: 'HomeEvents'
+    }
 </script>

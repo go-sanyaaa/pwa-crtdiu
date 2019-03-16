@@ -11,7 +11,6 @@
                             v-list-tile-title.font-weight-bold.text-upp
                                 | {{user.last_name + ' ' + user.first_name}}
                             v-list-tile-sub-title.body-1.grey--text.text--darken-1 Подписчик
-                    //v-divider
                     v-list-tile(ripple)
                         v-list-tile-action
                             v-icon alternate_email
@@ -41,6 +40,7 @@
     import {AUTH_LOGOUT} from "@/store/actions.type";
 
     export default {
+        name: 'HomeMenu',
         computed: {
             ...mapGetters(['user'])
         },

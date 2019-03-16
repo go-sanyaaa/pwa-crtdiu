@@ -51,7 +51,10 @@ export default new Router({
             title: 'Уведомления',
             requiresAuth: true
           },
-          component: () => import('@/views/HomeNotify')
+          components: {
+            default: () => import('@/views/HomeNotify'),
+            toolbar: () => import('@/components/Toolbars/HomeDefaultToolbar')
+          }
         },
         {
           path: 'main',
@@ -60,7 +63,10 @@ export default new Router({
             title: 'Меню',
             requiresAuth: true
           },
-          component: () => import('@/views/HomeMenu')
+          components: {
+            default: () => import('@/views/HomeMenu'),
+            toolbar: () => import('@/components/Toolbars/HomeDefaultToolbar')
+          }
         }
       ]
     },

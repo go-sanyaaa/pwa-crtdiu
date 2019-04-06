@@ -6,6 +6,8 @@
 ### Демо
 [https://lk.crtdiu-app.ru](https://lk.crtdiu-app.ru)
 
+user:user
+
 
 ### Project setup
 ```

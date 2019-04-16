@@ -44,7 +44,7 @@
             }
         },
         computed: {
-            ...mapGetters(['currentUser']),
+            // ...mapGetters(['currentUser']),
         }
     }
 </script>

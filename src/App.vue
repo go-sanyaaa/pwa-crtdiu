@@ -19,3 +19,9 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+    .tag{
+        text-decoration: none;
+    }
+</style>

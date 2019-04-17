@@ -7,6 +7,11 @@
 
 export default {
     name: 'App',
+    data(){
+        return {
+            shareAvailable: false
+        }
+    },
     mounted () {
         // Update page title.
         this.$store.watch((state) => {
@@ -16,6 +21,11 @@ export default {
         }, {
             deep: true
         })
+
+        // Check share api
+        if(navigator.share !== undefined){
+            this.shareAvailable = true
+        }
     }
 }
 </script>

@@ -37,7 +37,7 @@
                                     v-btn(color="primary" flat) Подтверждаю
                         v-spacer
                         v-btn.text-none.blue-grey--text(flat :to="`/events/${event.id}`") Подробнее
-                        v-btn(icon)
+                        v-btn(icon @click="shareEvent(event)" v-if="!$root.shareAvailable")
                             v-icon(size="22px").blue-grey--text share
 </template>
 
@@ -47,7 +47,7 @@
     import {LOAD_EVENTS} from "@/store/actions.type";
 
     export default {
-        name: "HomeEvent",
+        name: "HomeEvents",
         props: ['id'],
         mounted() {
             this.$store.dispatch(LOAD_EVENTS)
@@ -71,6 +71,12 @@
             getEventCats(cat_array){
                 const event_cats = [...cat_array]
                 return this.categories.filter(category => event_cats.some((cat_id,i) => category.id == cat_id && delete event_cats[i]))
+            },
+            shareEvent(event){
+                navigator.share({
+                    title: "Центр развития творчества детей и юношества Кировского района города Кемерово",
+                    url: event.link
+                })
             }
         }
     }

@@ -36,7 +36,7 @@
                 bottom_nav: '',
                 drawer: this.$vuetify.breakpoint.lgAndUp,
                 navMenu: [
-                    {icon: 'web_asset', route: '/', title: 'Лента', badge: 0},
+                    {icon: 'web_asset', route: '/', title: 'Новости', badge: 0},
                     {icon: 'event', route: '/events', title: 'События', badge: 0},
                     {icon: 'notifications', route: '/notify', title: 'Уведомления', badge: 4},
                     {icon: 'menu', route: '/main', title: 'Еще', badge: 0}

@@ -13,14 +13,14 @@ export default new Router({
       children: [
         {
           path: '',
-          name: 'feed',
+          name: 'news',
           meta: {
-            title: 'Лента',
+            title: 'Новости',
             requiresAuth: true,
           },
           components: {
-            default: () => import('@/views/HomeFeed'),
-            toolbar: () => import('@/components/Toolbars/HomeFeedToolbar')
+            default: () => import('@/views/HomeNews'),
+            toolbar: () => import('@/components/Toolbars/HomeNewsToolbar')
           }
         },
         {

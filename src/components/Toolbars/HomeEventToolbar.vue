@@ -4,6 +4,10 @@
         v-scroll-x-transition(hide-on-leave)
             v-btn(icon @click.stop="$router.go(-1)")
                 v-icon arrow_back
+        v-toolbar-title Новость
+        v-spacer
+        v-btn(icon v-if="$root.shareAvailable")
+            v-icon share
 </template>
 
 <script>

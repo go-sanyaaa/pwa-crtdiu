@@ -6,13 +6,24 @@
                 v-icon arrow_back
         v-toolbar-title Новость
         v-spacer
-        v-btn(icon v-if="$root.shareAvailable")
+        v-btn(icon v-if="shareAvailable")
             v-icon share
 </template>
 
 <script>
     export default {
-        name: "HomeEventToolbar"
+        name: "HomeEventToolbar",
+        data(){
+            return {
+                shareAvailable: false
+            }
+        },
+        mounted() {
+            // Check share api
+            if(navigator.share !== undefined){
+                this.shareAvailable = true
+            }
+        },
     }
 </script>
 

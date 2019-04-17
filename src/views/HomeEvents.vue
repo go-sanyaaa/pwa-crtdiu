@@ -37,7 +37,7 @@
                                     v-btn(color="primary" flat) Подтверждаю
                         v-spacer
                         v-btn.text-none.blue-grey--text(flat :to="`/events/${event.id}`") Подробнее
-                        v-btn(icon @click="shareEvent(event)" v-if="!$root.shareAvailable")
+                        v-btn(icon @click="shareEvent(event)" v-if="shareAvailable")
                             v-icon(size="22px").blue-grey--text share
 </template>
 
@@ -49,8 +49,18 @@
     export default {
         name: "HomeEvents",
         props: ['id'],
+        data(){
+            return {
+                shareAvailable: false
+            }
+        },
         mounted() {
             this.$store.dispatch(LOAD_EVENTS)
+
+            // Check share api
+            if(navigator.share !== undefined){
+                this.shareAvailable = true
+            }
         },
         computed: {
             ...mapGetters(['events','categories']),

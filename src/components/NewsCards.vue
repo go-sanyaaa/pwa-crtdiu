@@ -30,7 +30,7 @@
         computed:{
             ...mapGetters(['news','isLoading'])
         },
-        mounted() {
+        created() {
             this.$store.dispatch(LOAD_NEWS)
         },
         methods: {

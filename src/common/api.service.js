@@ -1,6 +1,6 @@
 import axios from 'axios'
-import JwtService from '@/common/jwt.service'
-import {API_URL} from "@/common/config";
+import JwtService from './jwt.service'
+import {API_URL} from "./config";
 
 const ApiService = {
     init() {
@@ -8,11 +8,11 @@ const ApiService = {
     },
 
     setHeader() {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${JwtService.getToken()}`;
+        axios.defaults.headers.common["Authentication"] = `${JwtService.getToken()}`;
     },
 
     get(resource, params = {}) {
-        return axios.get(resource, params).catch(error => {
+        return axios.get(resource, {params}).catch(error => {
             throw new Error(`ApiService ${error}`);
         });
     },
@@ -34,9 +34,9 @@ export default ApiService;
 
 export const NewsService = {
     query(params={}){
-        return ApiService.get('wp/v2/posts','')
+        return ApiService.get('wp/v2/posts',params)
             .catch(error => {
-                throw new Error(`[RWV] ApiService ${error}`);
+                throw new Error(`ApiService ${error}`);
             });
     }
 }

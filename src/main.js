@@ -24,24 +24,24 @@ router.beforeEach((to,from,next) => {
   next()
   store.dispatch('common/updateTitle',title)
 
-  if(to.matched.some(record => record.meta.requiresAuth)){
-    if(!store.getters.isAuthenticated){
-      next({
-        name: 'auth',
-        // query: {redirect: to.fullPath}
-      })
-    }else{
-      next()
-    }
-  }else {
-    if(to.meta.authClosed && store.getters.isAuthenticated){
-      next({
-        name: 'home'
-      })
-    }else {
-      next()
-    }
-  }
+  // if(to.matched.some(record => record.meta.requiresAuth)){
+  //   if(!store.getters.isAuthenticated){
+  //     next({
+  //       name: 'auth',
+  //       // query: {redirect: to.fullPath}
+  //     })
+  //   }else{
+  //     next()
+  //   }
+  // }else {
+  //   if(to.meta.authClosed && store.getters.isAuthenticated){
+  //     next({
+  //       name: 'home'
+  //     })
+  //   }else {
+  //     next()
+  //   }
+  // }
 })
 
 

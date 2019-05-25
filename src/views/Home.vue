@@ -38,8 +38,8 @@
                 navMenu: [
                     {icon: 'web_asset', route: '/', title: 'Новости', badge: 0},
                     {icon: 'event', route: '/events', title: 'События', badge: 0},
-                    {icon: 'notifications', route: '/notify', title: 'Уведомления', badge: 4},
-                    {icon: 'menu', route: '/main', title: 'Еще', badge: 0}
+                    //{icon: 'notifications', route: '/notify', title: 'Уведомления', badge: 4},
+                    {icon: 'account_circle', route: '/main', title: 'Аккаунт', badge: 0}
                 ]
             }
         },
@@ -50,9 +50,8 @@
 </script>
 
 <style lang="sass">
-    .v-btn--active
-        padding-top: 8px !important
-        .v-btn__content
-            font-size: 12px !important
+    .v-toolbar .v-badge__badge
+        top: 2px !important
+        right: 0 !important
 </style>
 

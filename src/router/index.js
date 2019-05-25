@@ -16,7 +16,7 @@ export default new Router({
           name: 'news',
           meta: {
             title: 'Новости',
-            requiresAuth: true,
+            requiresAuth: false,
           },
           components: {
             default: () => import('@/views/HomeNews'),
@@ -28,17 +28,29 @@ export default new Router({
           name: 'events',
           meta: {
             title: 'События',
-            requiresAuth: true,
+            requiresAuth: false,
           },
           components: {
             default: () => import('@/views/HomeEvents'),
             toolbar: () => import('@/components/Toolbars/HomeEventsToolbar')
-          }
+          },
+          children: [
+
+          ]
         },
         {
           path: 'events/:id',
           name: 'events-single',
-          props: {default: true},
+          meta: {
+            title: 'События',
+            requiresAuth: false,
+          },
+          props: {default: (route) => {
+            console.log(route);
+            return {
+              id: 'Sanya2'
+            }
+          }},
           components: {
             default: () => import('@/views/HomeEvent'),
             toolbar: () => import('@/components/Toolbars/HomeEventToolbar')

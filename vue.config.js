@@ -7,5 +7,5 @@ module.exports = {
     },
     themeColor: '#FFFFFF',
     msTileColor: '#FFFFFF'
-  },
+  }
 }

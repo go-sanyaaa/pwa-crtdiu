@@ -1,8 +1,8 @@
-import JwtService from '@/common/jwt.service'
-import ApiService from '@/common/api.service'
+import JwtService from '../common/jwt.service'
+import ApiService from '../common/api.service'
 
-import {AUTH_LOGIN, AUTH_LOGOUT, UPDATE_USER, CHECK_TOKEN} from "@/store/actions.type";
-import {SET_TOKEN, PURGE_AUTH, SET_USER, SET_ERROR} from "@/store/mutations.type";
+import {AUTH_LOGIN, AUTH_LOGOUT, UPDATE_USER, CHECK_TOKEN} from "./actions.type";
+import {SET_TOKEN, PURGE_AUTH, SET_USER, SET_ERROR} from "./mutations.type";
 
 const state = {
     isAuthenticated: !!JwtService.getToken(),
@@ -45,7 +45,7 @@ const actions = {
     [AUTH_LOGIN](context,user){
         return new Promise((res,rej)=>{
             const {username, password} = user
-            ApiService.post('jwt-auth/v1/token',{username,password})
+            ApiService.post('aam/v1/authenticate',{username,password})
                 .then(resp => {
                     const token = resp.data.token;
                     context.commit(SET_TOKEN,token)
@@ -65,16 +65,12 @@ const actions = {
         return new Promise((res,rej)=>{
             ApiService.post('wp/v2/users/me')
                 .then(resp => {
-                    const {id,first_name,last_name,email, avatar_urls, username} = resp.data;
-                    const user = {
+                    const {id,name,email, avatar_urls, username} = resp.data;
+                    context.commit(SET_USER,{
                         id,
-                        first_name,
-                        last_name,
-                        email,
+                        name,
                         avatar_urls,
-                        username
-                    }
-                    context.commit(SET_USER,user)
+                    })
                     res(resp)
                 })
         })
@@ -82,14 +78,15 @@ const actions = {
     [CHECK_TOKEN](context, token){
         return new Promise((res,rej) => {
             ApiService.setHeader()
-            ApiService.post('jwt-auth/v1/token/validate')
+            ApiService.post('/aam/v1/validate-jwt',{jwt:token})
                 .then(resp => {
-                    context.commit(SET_TOKEN,token)
-                    res(resp)
+                    if(resp.data.status == 'valid'){
+                        context.commit(SET_TOKEN,token)
+                        res(resp)
+                    }
                 })
                 .catch(err => {
                     context.commit(PURGE_AUTH)
-                    rej(err)
                 })
         })
     },

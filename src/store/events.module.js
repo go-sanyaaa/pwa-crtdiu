@@ -2,43 +2,99 @@ import ApiService from '../common/api.service'
 
 
 import {
+    GET_RECORD,
     FETCH_EVENTS,
     FETCH_EVENTS_CAT,
-    FETCH_NEWS,
     LOAD_EVENTS,
     SUBSCRIBE_ON_EVENT,
-    UNSUBSCRIBE_ON_EVENT
+    UNSUBSCRIBE_ON_EVENT,
+    INIT_RECORDS, UPDATE_FILTERS
 } from "./actions.type";
-import {SET_EVENTS, SET_EVENTS_CAT, UPDATE_EVENT_SUBSCRIBE} from "./mutations.type";
+
+import {
+    SET_EVENTS_CAT,
+    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE
+} from "./mutations.type";
 
 const state = {
-    events: [],
-    categories: []
+    total: 0,
+    isLoading: false,
+    filters: {},
+    pagination: {
+        per_page: 2,
+        page: 1
+    },
+    categories: [],
+    records: []
 }
 
 const getters = {
     catCount: state => state.categories.length,
-    events: state =>  state.events,
+    records: state =>  state.records,
     categories: state => state.categories,
-    eventsCount: state => state.events.length,
+    total: state => state.total,
+    isLoading: state => state.isLoading,
+    filters: state => state.filters,
+    pagination: pagination => state.pagination
 }
 
 const actions = {
-    [LOAD_EVENTS](context){
-        context.dispatch(FETCH_EVENTS_CAT)
-        if(!context.getters.eventsCount){
-            context.dispatch(FETCH_EVENTS)
-        }
+    // [GET_RECORD](context,params){
+    //     const {event_id} = params;
+    //     return new Promise((res,rej)=>{
+    //         ApiService.get(`wp/v2/events/${event_id}`)
+    //             .then(resp => {
+    //                 context.commit(SET_EVENT,resp.data)
+    //                 res({status:resp.status,text: resp.statusText})
+    //             })
+    //     })
+    // },
+    [INIT_RECORDS](context){
+        context.commit(LOAD_START);
+        return Promise.all([
+            context.dispatch(FETCH_EVENTS_CAT),
+            context.dispatch(LOAD_EVENTS)
+        ]).then(resp => {
+            return resp.every(({status}) => status === 200 )
+        })
     },
-    [FETCH_EVENTS](context,params = {}){
+    [LOAD_EVENTS](context){
+        context.commit(FETCH_START)
+        context.commit(SET_PAGE,1)
+        const filters = context.getters.filters
+        const pagination = context.getters.pagination
+
         return new Promise((res,rej) => {
-            ApiService.get('wp/v2/events',params)
+            ApiService.get('wp/v2/events',{...filters,...pagination})
                 .then(resp => {
-                    context.commit(SET_EVENTS,resp.data)
+                    const total = Number(resp.headers['x-wp-total']);
+                    const records = resp.data;
+                    context.commit(LOAD_END,{records,total});
                     res({status:resp.status,text: resp.statusText})
                 })
         })
     },
+
+    [FETCH_EVENTS](context,params = {}){
+        context.commit(FETCH_START);
+        const filters = context.getters.filters
+        const pagination = context.getters.pagination
+        context.commit(SET_PAGE,++pagination.page)
+        return new Promise((res,rej) => {
+            ApiService.get('wp/v2/events',{...filters,...pagination})
+                .then(resp => {
+                    const records = resp.data;
+                    context.commit(FETCH_END,{records})
+                    res({status:resp.status,text: resp.statusText})
+                })
+        })
+    },
+
+    [UPDATE_FILTERS](context,filters){
+        context.commit(SET_FILTERS, filters)
+        return context.dispatch(LOAD_EVENTS)
+    },
+
     [FETCH_EVENTS_CAT](context){
         return new Promise((res,rej) => {
             ApiService.get('wp/v2/event_cat')
@@ -56,6 +112,7 @@ const actions = {
                     if(data.status){
                         context.commit(UPDATE_EVENT_SUBSCRIBE,{event_id})
                     }
+                    res({status:resp.status,text: resp.statusText})
                 })
         })
     },
@@ -67,28 +124,52 @@ const actions = {
                     if(data.status){
                         context.commit(UPDATE_EVENT_SUBSCRIBE,{event_id})
                     }
+                    res({status:resp.status,text: resp.statusText})
                 })
         })
     }
 }
 
 const mutations = {
-    [SET_EVENTS](state,data){
-        const events = data
-        state.events = [...state.events,...events]
+    [LOAD_START](state){
+        state.isLoading = true
     },
+    [LOAD_END](state,{records, total}){
+        state.total = total;
+        state.records = records;
+        state.isLoading = false;
+    },
+
+    [FETCH_START](state){
+        state.isLoading = true
+    },
+    [FETCH_END](state,{records}){
+        state.records = [...state.records,...records];
+        state.isLoading = false
+    },
+
+    [SET_FILTERS](state, data){
+        state.filters = {...data};
+    },
+
     [SET_EVENTS_CAT](state,data){
-        const cats = data;
-        state.categories = cats
+        state.categories = data
     },
+
+    [SET_PAGE](state,data){
+        state.pagination.page = data
+    },
+
+
     [UPDATE_EVENT_SUBSCRIBE](state,data){
         const {event_id} = data
         const event_i = state.events.findIndex(event => event.id === event_id)
         state.events[event_i].is_register = !state.events[event_i].is_register
-    }
+    },
 }
 
 export default {
+    namespaced: true,
     state,
     getters,
     actions,

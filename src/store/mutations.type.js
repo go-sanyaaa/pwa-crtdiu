@@ -7,6 +7,13 @@ export const SET_ERROR = 'setError'
 export const FETCH_START = 'fetchStart'
 export const FETCH_END = 'fetchEnd'
 
+export const LOAD_START = 'loadStart'
+export const LOAD_END = 'loadEnd'
+
 export const SET_EVENTS = 'setEvents'
 export const UPDATE_EVENT_SUBSCRIBE = 'updateEventSubscribe'
 export const SET_EVENTS_CAT = 'setEventsCat'
+
+export const SET_FILTERS = 'setFilters'
+
+export const SET_PAGE = 'setPage'

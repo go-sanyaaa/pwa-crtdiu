@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-layout.row.wrap
+    v-layout.row.wrap.ma-0
         v-flex.text-xs-center.py-5(v-if="isLoading && newsEmpty")
             v-progress-circular(indeterminate color="primary")
         v-flex.xs12.sm6.offset-sm3(v-else v-for="item in news" :key="item.id")

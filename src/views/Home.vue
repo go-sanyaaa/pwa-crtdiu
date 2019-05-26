@@ -14,7 +14,8 @@
             v-container.fluid.grid-list-lg(:px-0="$vuetify.breakpoint.xsOnly")
                 transition
                     router-view
-        v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.xsOnly" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show" height="52px")
+        v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.xsOnly" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show"
+                :height="iphoneX ? '72px' : '52px'" :style="{paddingBottom: iphoneX ? '20px' : ''}")
                 v-btn(v-for="menu in navMenu"
                     flat color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="true"
                 )
@@ -32,6 +33,7 @@
         name: 'Home',
         data: function () {
             return {
+                iphoneX: false,
                 bottom_nav_show: true,
                 bottom_nav: '',
                 drawer: this.$vuetify.breakpoint.lgAndUp,
@@ -41,6 +43,30 @@
                     //{icon: 'notifications', route: '/notify', title: 'Уведомления', badge: 4},
                     {icon: 'account_circle', route: '/main', title: 'Аккаунт', badge: 0}
                 ]
+            }
+        },
+        created() {
+            // Really basic check for the ios platform
+            // https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
+            var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            // Get the device pixel ratio
+            var ratio = window.devicePixelRatio || 1;
+
+            // Define the users device screen dimensions
+            var screen = {
+                width : window.screen.width * ratio,
+                height : window.screen.height * ratio
+            };
+
+            // iPhone X Detection
+            if (iOS && (screen.width == 1125 || screen.width == 828) && (screen.height === 2436 || screen.height === 1792)) {
+
+                // Set a global variable now we've determined the iPhoneX is true
+                this.iphoneX = true;
+                // // Adds a listener for ios devices that checks for orientation changes.
+                // window.addEventListener('orientationchange', update);
+                // update();
             }
         },
         computed: {

@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark clipped color="primary" height="52px" prominent)
+    v-toolbar.elevation-0(app dark clipped color="primary" height="52px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
         slot(name='slide-icon')
         v-text-field(solo-inverted autofocus hide-details flat clearable
         type="search"

@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark tabs clipped color="primary" height="52px" prominent)
+    v-toolbar.elevation-0(app dark tabs clipped color="primary" height="52px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
         slot(name='slide-icon')
         v-text-field(solo-inverted autofocus hide-details flat clearable
             type="search"
@@ -12,18 +12,9 @@
             @click:clear="clear"
             )
         v-toolbar-title(v-show="!searchActive") Новости
-        //v-menu(offset-y right transition="slide-y-reverse-transition")
-            template(#activator="{on}")
-                v-toolbar-title(v-show="!searchActive" v-on="on")
-                    span {{currentSubPage}}
-                    v-icon(dark right) arrow_drop_down
-            v-list(flat)
-                v-list-tile(v-for="item in subPages" :key="item.param" @click="changePage(item)")
-                    v-list-tile-title {{item.name}}
         v-spacer(v-show="!searchActive")
         v-btn(v-show="!searchActive" icon @click="toggleSearch")
             v-icon search
-        //v-toolbar-items
 
 </template>
 
@@ -37,20 +28,12 @@
             return{
                 searchText: '',
                 searchActive: false,
-                currentSubPage: 'Все',
-                subPages: [
-                    {name: 'Все', param: 'home'},
-                    {name: 'Новости', param: 'news'}
-                ]
             }
         },
         computed:{
             ...mapGetters({filters: 'news/filters'})
         },
         methods: {
-            changePage(page){
-                this.currentSubPage = page.name
-            },
             toggleSearch(){
                 this.searchActive = !this.searchActive
             },

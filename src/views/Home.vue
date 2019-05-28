@@ -1,6 +1,6 @@
 <template lang="pug">
     v-app#inspire
-        v-navigation-drawer(v-if="$vuetify.breakpoint.smAndUp" v-model="drawer" fixed app disable-resize-watcher)
+        v-navigation-drawer(v-if="$vuetify.breakpoint.mdAndUp" v-model="drawer" fixed app disable-resize-watcher)
             v-list
                 v-list-tile(v-for="(item, i) in navMenu" :key="`navitem${i}`" append :to="item.route")
                     v-list-tile-action
@@ -9,12 +9,11 @@
                         v-list-tile-title {{item.title}}
         router-view(name='toolbar')
             template(#slide-icon)
-                v-toolbar-side-icon(v-if="$vuetify.breakpoint.smAndUp" @click.stop="drawer = !drawer")
+                v-toolbar-side-icon(v-if="$vuetify.breakpoint.mdAndUp" @click.stop="drawer = !drawer")
         v-content
-            v-container.fluid.grid-list-lg(:px-0="$vuetify.breakpoint.xsOnly")
-                transition
-                    router-view
-        v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.xsOnly" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show"
+            v-container.fluid.grid-list-lg.fill-height(:pa-0="$vuetify.breakpoint.xsOnly")
+                router-view
+        v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.smAndDown" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show"
                 :height="iphoneX ? '72px' : '52px'" :style="{paddingBottom: iphoneX ? '20px' : ''}")
                 v-btn(v-for="menu in navMenu"
                     flat color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="true"
@@ -41,7 +40,7 @@
                     {icon: 'web_asset', route: '/', title: 'Новости', badge: 0},
                     {icon: 'event', route: '/events', title: 'События', badge: 0},
                     //{icon: 'notifications', route: '/notify', title: 'Уведомления', badge: 4},
-                    {icon: 'account_circle', route: '/main', title: 'Аккаунт', badge: 0}
+                    {icon: 'account_circle', route: '/account', title: 'Аккаунт', badge: 0}
                 ]
             }
         },

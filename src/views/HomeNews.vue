@@ -2,7 +2,7 @@
     v-layout.row.wrap.ma-0
         v-flex.text-xs-center.py-5(v-if="isLoading && newsEmpty")
             v-progress-circular(indeterminate color="primary")
-        v-flex.xs12.sm6.offset-sm3(v-else v-for="item in news" :key="item.id")
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-else v-for="item in news" :key="item.id")
             v-card
                 router-link(:to="`/events/${item.id}`")
                     v-img(:src="getPostImages(item)" height="240px")

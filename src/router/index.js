@@ -9,7 +9,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: () => import('@/views/Home'),
+      component: () => import('../views/Home'),
       children: [
         {
           path: '',
@@ -19,8 +19,8 @@ export default new Router({
             requiresAuth: false,
           },
           components: {
-            default: () => import('@/views/HomeNews'),
-            toolbar: () => import('@/components/Toolbars/HomeNewsToolbar')
+            default: () => import('../views/HomeNews'),
+            toolbar: () => import('../components/Toolbars/HomeNewsToolbar')
           }
         },
         {
@@ -31,8 +31,8 @@ export default new Router({
             requiresAuth: false,
           },
           components: {
-            default: () => import('@/views/HomeEvents'),
-            toolbar: () => import('@/components/Toolbars/HomeEventsToolbar')
+            default: () => import('../views/HomeEvents'),
+            toolbar: () => import('../components/Toolbars/HomeEventsToolbar')
           },
           children: [
 
@@ -52,8 +52,8 @@ export default new Router({
             }
           }},
           components: {
-            default: () => import('@/views/HomeEvent'),
-            toolbar: () => import('@/components/Toolbars/HomeEventToolbar')
+            default: () => import('../views/HomeEvent'),
+            toolbar: () => import('../components/Toolbars/HomeEventToolbar')
           }
         },
         {
@@ -64,20 +64,20 @@ export default new Router({
             requiresAuth: true
           },
           components: {
-            default: () => import('@/views/HomeNotify'),
-            toolbar: () => import('@/components/Toolbars/HomeDefaultToolbar')
+            default: () => import('../views/HomeNotify'),
+            toolbar: () => import('../components/Toolbars/HomeDefaultToolbar')
           }
         },
         {
-          path: 'main',
-          name: 'main',
+          path: 'account',
+          name: 'account',
           meta: {
-            title: 'Меню',
+            title: 'Аккаунт',
             requiresAuth: true
           },
           components: {
-            default: () => import('@/views/HomeMenu'),
-            toolbar: () => import('@/components/Toolbars/HomeDefaultToolbar')
+            default: () => import('../views/HomeAccount'),
+            toolbar: () => import('../components/Toolbars/HomeDefaultToolbar')
           }
         }
       ]

@@ -7,11 +7,12 @@
             prepend-inner-icon="arrow_back"
             v-if="searchActive"
             v-model="searchText"
+            ref="searchInput"
             @keyup.enter="search"
             @click:prepend-inner="toggleSearch"
             @click:clear="clear"
             )
-        v-toolbar-title(v-show="!searchActive") Новости
+        v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
         v-spacer(v-show="!searchActive")
         v-btn(v-show="!searchActive" icon @click="toggleSearch")
             v-icon search
@@ -38,6 +39,7 @@
                 this.searchActive = !this.searchActive
             },
             search(){
+                this.$refs.searchInput.blur()
                 this.$store.dispatch(`news/${UPDATE_FILTERS}`,{'search':this.searchText})
             },
             clear(){

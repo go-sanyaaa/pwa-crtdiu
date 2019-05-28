@@ -7,11 +7,12 @@
             prepend-inner-icon="arrow_back"
             v-if="searchActive"
             v-model="searchText"
+            ref="searchInput"
             @keyup.enter="search"
             @click:prepend-inner="toggleSearch"
             @click:clear="clear"
         )
-        v-toolbar-title(v-show="!searchActive") События
+        v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
         v-spacer(v-show="!searchActive")
         v-dialog(v-model="dialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="600px")
             template(v-slot:activator="{on}")
@@ -20,11 +21,13 @@
                     v-btn(icon v-show="!searchActive" v-on="on")
                         v-icon filter_list
             v-card
-                v-card-title
+                v-toolbar(flat)
+                    v-toolbar-title Фильтр событий
+                //v-card-title
                     span.headline Фильтр событий
                 v-divider
                 v-container()
-                    v-layout(column)
+                    v-layout.row.wrap
                         v-flex.xs12
                            v-select(
                                clearable label="Категория событий" placeholder="Все"
@@ -90,6 +93,7 @@
                 this.searchActive = !this.searchActive
             },
             search(){
+                this.$refs.searchInput.blur()
                 this.$store.dispatch(`events/${UPDATE_FILTERS}`,{...this.filters,'search':this.searchText})
             },
             clear(){

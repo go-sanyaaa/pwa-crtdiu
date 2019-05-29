@@ -26,8 +26,6 @@
                     v-icon.ma-0(v-else) {{menu.icon}}
 </template>
 <script>
-  import {mapGetters} from 'vuex'
-
     export default {
         name: 'Home',
         data: function () {

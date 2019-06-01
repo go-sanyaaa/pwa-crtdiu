@@ -3,21 +3,22 @@
         v-app#inspire
             v-navigation-drawer(v-if="$vuetify.breakpoint.mdAndUp" v-model="drawer" fixed app disable-resize-watcher)
                 v-list
-                    v-list-tile(v-for="(item, i) in navMenu" :key="`navitem${i}`" append :to="item.route")
-                        v-list-tile-action
+                    v-list-item(v-for="(item, i) in navMenu" :key="`navitem${i}`" append :to="item.route")
+                        v-list-item-action
                             v-icon {{item.icon}}
-                        v-list-tile-content
-                            v-list-tile-title {{item.title}}
+                        v-list-item-content
+                            v-list-item-title {{item.title}}
             router-view(name='toolbar')
                 template(#slide-icon)
-                    v-toolbar-side-icon(v-if="$vuetify.breakpoint.mdAndUp" @click.stop="drawer = !drawer")
+                    v-app-bar-nav-icon(v-if="$vuetify.breakpoint.mdAndUp" @click.stop="drawer = !drawer")
+                        v-icon menu
             v-content
-                v-container.fluid.grid-list-lg.fill-height(:pa-0="$vuetify.breakpoint.xsOnly")
+                v-container.fluid.grid-list-lg(:pa-0="$vuetify.breakpoint.xsOnly")
                     router-view
-            v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.smAndDown" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show"
+            v-bottom-navigation.elevation-24(v-if="$vuetify.breakpoint.smAndDown" app grow v-model="bottom_nav" :value="bottom_nav_show"
                 :height="iphoneX ? '72px' : '52px'" :style="{paddingBottom: iphoneX ? '20px' : ''}")
                 v-btn(v-for="menu in navMenu"
-                    flat color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="true"
+                    text color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="true"
                 )
                     span.mt-1 {{menu.title}}
                     v-badge(v-if="menu.badge" color="accent")
@@ -36,7 +37,8 @@ export default {
             iphoneX: false,
             bottom_nav_show: true,
             bottom_nav: '',
-            drawer: this.$vuetify.breakpoint.lgAndUp,
+            drawer: false,
+            // drawer: this.$vuetify.breakpoint.lgAndUp,
             navMenu: [
                 {icon: 'web_asset', route: '/', title: 'Новости', badge: 0},
                 {icon: 'event', route: '/events', title: 'События', badge: 0},
@@ -47,6 +49,7 @@ export default {
     },
     created() {
         // Update page title.
+
         this.$store.watch((state) => {
             return state.common.title
         }, (title) => {
@@ -54,8 +57,6 @@ export default {
         }, {
             deep: true
         })
-
-        console.log("Created")
 
         // Really basic check for the ios platform
         // https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
@@ -84,11 +85,8 @@ export default {
 </script>
 
 <style lang="scss">
-    .tag{
-        text-decoration: none;
-    }
     .v-toolbar .v-badge__badge{
-        top: 2px !important;
-        right: 0 !important;
+        top: -4px !important;
+        right: -4pxs !important;
     }
 </style>

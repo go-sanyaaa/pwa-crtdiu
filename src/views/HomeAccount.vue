@@ -9,29 +9,28 @@
             v-card-actions
                 v-btn(color="primary" depressed block type="submit" form="form1") Войти
             v-card-actions
-                v-btn.caption(color="grey" flat) Забыли пароль?
+                v-btn.caption(color="grey" text) Забыли пароль?
                 v-spacer
-                v-btn.caption(color="accent" flat) Создать аккаунт
+                v-btn.caption(color="accent" text) Создать аккаунт
     v-layout.row.wrap.ma-0.align-start(v-else)
         v-flex.xs12.sm8.offset-sm2.md6.offset-md3
-            v-card.elevation-24
+            v-card(outlined)
                 v-list(two-line)
-                    v-list-tile(avatar)
-                        v-list-tile-action
+                    v-list-item
+                        v-list-item-action.mr-2
                             v-avatar(size='56px')
-                                v-img(v-if="user.avatar_urls" :src="user.avatar_urls['96']")
-                        v-list-tile-content.ml-3
-                            v-list-tile-title.font-weight-bold.text-upp
+                                img(v-if="user.avatar_urls" :src="user.avatar_urls['96']")
+                        v-list-item-content.ml-3
+                            v-list-item-title.font-weight-bold.text-upp
                                 | {{user.name}}
-                            v-list-tile-sub-title.body-1.grey--text.text--darken-1 {{role}}
-                    v-divider(inset)
-                    v-list-tile(ripple color="primary")
-                        v-list-tile-action
+                            v-list-item-subtitle.body-1.grey--text.text--darken-1 {{role}}
+                    v-list-item(ripple color="primary")
+                        v-list-item-action
                             v-icon(outlined) alternate_email
-                        v-list-tile-content
+                        v-list-item-content
                             template
-                                v-list-tile-title.body-2.grey--text.text--darken-2 {{user.email}}
-                                v-list-tile-sub-title.caption.grey--text.text--lighten-1 Почтовый адрес
+                                v-list-item-title.body-2.grey--text.text--darken-2 {{user.email}}
+                                v-list-item-subtitle.caption.grey--text.text--lighten-1 Почтовый адрес
                 v-divider
                 v-list(subheader)
                     v-subheader Ближайшие события с моим участием:
@@ -42,26 +41,26 @@
                 v-divider
                 v-list(subheader)
                     v-subheader Действия
-                    v-list-tile(@click.stop="exitDialog = true" ripple)
-                        v-list-tile-action
+                    v-list-item(@click.stop="exitDialog = true" ripple)
+                        v-list-item-action
                             v-icon exit_to_app
-                        v-list-tile-content
-                            v-list-tile-title Выйти
+                        v-list-item-content
+                            v-list-item-title Выйти
                     v-dialog(v-model="exitDialog" max-width="400px")
                         v-card
                             v-toolbar(flat)
                                 v-toolbar-title Подтвердите действие
                             v-card-text Вы действительно хотите выйти из учетной записи?
                             v-card-actions
-                                v-btn(flat @click="exitDialog = false") Отменить
+                                v-btn(text @click="exitDialog = false") Отменить
                                 v-spacer
                                 v-btn(color="primary" depressed @click="logout") Выйти
                     v-divider(inset)
-                    v-list-tile(@click.stop="openEditDialog" ripple)
-                        v-list-tile-action
+                    v-list-item(@click.stop="openEditDialog" ripple)
+                        v-list-item-action
                             v-icon edit
-                        v-list-tile-content
-                            v-list-tile-title Редактировать профиль
+                        v-list-item-content
+                            v-list-item-title Редактировать профиль
                     v-dialog(v-model="editDialog" max-width="480px")
                         v-card
                             v-toolbar(flat)
@@ -72,15 +71,15 @@
                                         v-text-field(label="Имя" type="text" v-model="firstName")
                                         v-text-field(label="Фамилия" type="text" v-model="lastName")
                             v-card-actions
-                                v-btn(flat @click="editDialog = false") Отменить
+                                v-btn(text @click="editDialog = false") Отменить
                                 v-spacer
                                 v-btn(color="primary" :loading="userEditing" depressed @click="edit") Редактировать
                     v-divider(inset)
-                    v-list-tile( ripple)
-                        v-list-tile-action
+                    v-list-item( ripple)
+                        v-list-item-action
                             v-icon lock
-                        v-list-tile-content
-                            v-list-tile-title Сменить пароль
+                        v-list-item-content
+                            v-list-item-title Сменить пароль
 </template>
 
 <script>
@@ -106,7 +105,7 @@
                 return this.$vuetify.breakpoint.xsOnly ? 'align-end' : 'align-center'
             },
             role(){
-                return this.user.roles[0] == 'administrator' ? 'Администратор' : 'Подписчик'
+                return this.user.role == 'administrator' ? 'Администратор' : 'Подписчик'
             }
         },
         methods: {

@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark tabs clipped color="primary" height="52px" prominent)
+    v-app-bar.elevation-0(app light clipped color="#FFF" elevate-on-scroll)
         slot(name='slide-icon')
         v-scroll-x-transition(hide-on-leave)
             v-btn(icon @click.stop="$router.go(-1)")

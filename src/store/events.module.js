@@ -105,6 +105,7 @@ const actions = {
         })
     },
     [SUBSCRIBE_ON_EVENT](context,event_id){
+        console.log(`Subscribe on ${event_id}`)
         return new Promise((res,rej) => {
             ApiService.post(`wp/v2/events/${event_id}`)
                 .then(resp => {
@@ -112,19 +113,21 @@ const actions = {
                     if(data.status){
                         context.commit(UPDATE_EVENT_SUBSCRIBE,{event_id})
                     }
-                    res({status:resp.status,text: resp.statusText})
+                    res(data)
                 })
         })
     },
     [UNSUBSCRIBE_ON_EVENT](context,event_id){
+        console.log(`unSubscribe on ${event_id}`)
         return new Promise((res,rej) => {
             ApiService.delete(`wp/v2/events/${event_id}`)
                 .then(resp => {
+                    console.log(resp)
                     const {data} = resp
                     if(data.status){
                         context.commit(UPDATE_EVENT_SUBSCRIBE,{event_id})
                     }
-                    res({status:resp.status,text: resp.statusText})
+                    res(data)
                 })
         })
     }
@@ -160,11 +163,10 @@ const mutations = {
         state.pagination.page = data
     },
 
-
     [UPDATE_EVENT_SUBSCRIBE](state,data){
         const {event_id} = data
-        const event_i = state.events.findIndex(event => event.id === event_id)
-        state.events[event_i].is_register = !state.events[event_i].is_register
+        const event_i = state.records.findIndex(event => event.id === event_id)
+        state.records[event_i].is_register = !state.records[event_i].is_register
     },
 }
 

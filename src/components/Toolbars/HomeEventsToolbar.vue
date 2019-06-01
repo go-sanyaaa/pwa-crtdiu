@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark clipped color="primary" height="52px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
+    v-app-bar.elevation-0(app light clipped color="#FFF" elevate-on-scroll)
         slot(name='slide-icon')
         v-text-field(solo-inverted autofocus hide-details flat clearable
         type="search"
@@ -21,10 +21,8 @@
                     v-btn(icon v-show="!searchActive" v-on="on")
                         v-icon filter_list
             v-card
-                v-toolbar(flat)
+                v-toolbar(flat color="primary" dark)
                     v-toolbar-title Фильтр событий
-                //v-card-title
-                    span.headline Фильтр событий
                 v-divider
                 v-container()
                     v-layout.row.wrap

@@ -63,7 +63,7 @@ const actions = {
                         email,
                         name,
                         avatar_urls,
-                        roles,
+                        role: roles[0],
                         first_name,
                         last_name
                     })

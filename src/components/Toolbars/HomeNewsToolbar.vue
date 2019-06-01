@@ -1,16 +1,17 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark tabs clipped color="primary" height="52px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
+    v-app-bar(app light clipped color="#FFF" elevate-on-scroll)
         slot(name='slide-icon')
-        v-text-field(solo-inverted autofocus hide-details flat clearable
+        v-text-field(solo flat autofocus hide-details text
             type="search"
             label="Поиск"
-            prepend-inner-icon="arrow_back"
+            prepend-icon="arrow_back"
             v-if="searchActive"
             v-model="searchText"
             ref="searchInput"
+            append-outer-icon="close"
             @keyup.enter="search"
-            @click:prepend-inner="toggleSearch"
-            @click:clear="clear"
+            @click:prepend="toggleSearch"
+            @click:append-outer="clear"
             )
         v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
         v-spacer(v-show="!searchActive")

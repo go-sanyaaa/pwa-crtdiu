@@ -16,7 +16,20 @@ export default new Router({
         },
         components: {
           default: () => import('../views/HomeNews'),
-          toolbar: () => import('../components/Toolbars/HomeNewsToolbar')
+          toolbar: () => import('../components/Toolbars/NewsToolbar')
+        }
+      },
+      {
+        path: '/news/:id',
+        name: 'single-news',
+        meta: {
+          title: 'Новость',
+          requiresAuth: false,
+        },
+        props: {default: true},
+        components: {
+          default: () => import('../views/singleNews'),
+          toolbar: () => import('../components/Toolbars/SingleNewsToolbar')
         }
       },
       {
@@ -28,14 +41,14 @@ export default new Router({
         },
         components: {
           default: () => import('../views/HomeEvents'),
-          toolbar: () => import('../components/Toolbars/HomeEventsToolbar')
+          toolbar: () => import('../components/Toolbars/EventsToolbar')
         }
       },
       {
         path: '/events/:id',
         name: 'events-single',
         meta: {
-          title: 'События',
+          title: 'Событие',
           requiresAuth: false,
         },
         props: {default: (route) => {
@@ -45,8 +58,8 @@ export default new Router({
           }
         }},
         components: {
-          default: () => import('../views/HomeEvent'),
-          toolbar: () => import('../components/Toolbars/HomeEventToolbar')
+          default: () => import('../views/singleEvent'),
+          toolbar: () => import('../components/Toolbars/SingleEventsToolbar')
         }
       },
       {
@@ -58,7 +71,7 @@ export default new Router({
         },
         components: {
           default: () => import('../views/HomeNotify'),
-          toolbar: () => import('../components/Toolbars/HomeDefaultToolbar')
+          toolbar: () => import('../components/Toolbars/DefaultToolbar')
         }
       },
       {
@@ -70,7 +83,7 @@ export default new Router({
         },
         components: {
           default: () => import('../views/HomeAccount'),
-          toolbar: () => import('../components/Toolbars/HomeDefaultToolbar')
+          toolbar: () => import('../components/Toolbars/DefaultToolbar')
         }
       }
   ],

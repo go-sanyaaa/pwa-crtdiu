@@ -8,12 +8,14 @@ import {
     LOAD_EVENTS,
     SUBSCRIBE_ON_EVENT,
     UNSUBSCRIBE_ON_EVENT,
-    INIT_RECORDS, UPDATE_FILTERS
+    INIT_RECORDS,
+    UPDATE_FILTERS,
+    FETCH_MY_EVENTS
 } from "./actions.type";
 
 import {
     SET_EVENTS_CAT,
-    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE
+    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE, SET_MY_EVENTS
 } from "./mutations.type";
 
 const state = {
@@ -21,11 +23,12 @@ const state = {
     isLoading: false,
     filters: {},
     pagination: {
-        per_page: 2,
+        per_page: 10,
         page: 1
     },
     categories: [],
-    records: []
+    records: [],
+    myEvents: []
 }
 
 const getters = {
@@ -35,7 +38,8 @@ const getters = {
     total: state => state.total,
     isLoading: state => state.isLoading,
     filters: state => state.filters,
-    pagination: pagination => state.pagination
+    pagination: state => state.pagination,
+    myEvents: state => state.myEvents,
 }
 
 const actions = {
@@ -90,6 +94,19 @@ const actions = {
         })
     },
 
+    [FETCH_MY_EVENTS]({commit},data = {}){
+        const {params} = data
+        return new Promise((res,rej) => {
+            ApiService.get('wp/v2/users/me/events',params)
+                .then(resp => {
+                    const {data} = resp
+                    console.log(resp)
+                    commit(SET_MY_EVENTS,data)
+                    res()
+                })
+        })
+    },
+
     [UPDATE_FILTERS](context,filters){
         context.commit(SET_FILTERS, filters)
         return context.dispatch(LOAD_EVENTS)
@@ -130,7 +147,7 @@ const actions = {
                     res(data)
                 })
         })
-    }
+    },
 }
 
 const mutations = {
@@ -168,6 +185,10 @@ const mutations = {
         const event_i = state.records.findIndex(event => event.id === event_id)
         state.records[event_i].is_register = !state.records[event_i].is_register
     },
+
+    [SET_MY_EVENTS](state,data){
+        state.myEvents = data
+    }
 }
 
 export default {

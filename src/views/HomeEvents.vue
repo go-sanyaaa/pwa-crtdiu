@@ -1,7 +1,5 @@
 <template lang="pug">
     v-layout.row.wrap.ma-0
-        v-flex.text-xs-center.py-5(v-if="isLoading && eventsEmpty")
-            v-progress-circular(indeterminate color="primary")
         v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-for="event in events" :key="event.id")
             c-event-card(:event="event" :categories="categories")
         v-flex.text-xs-center.xs12.mb-2(

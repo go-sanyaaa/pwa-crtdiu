@@ -1,22 +1,23 @@
 <template lang="pug">
     v-app-bar.elevation-0(app light clipped color="#FFF" elevate-on-scroll)
         slot(name='slide-icon')
-        v-text-field(solo-inverted autofocus hide-details flat clearable
-        type="search"
+        v-text-field(solo autofocus hide-details flat
+            type="search"
             label="Поиск"
-            prepend-inner-icon="arrow_back"
+            prepend-icon="arrow_back"
             v-if="searchActive"
             v-model="searchText"
             ref="searchInput"
+            :append-outer-icon="searchText.length > 0 ? 'backspace' : ''"
             @keyup.enter="search"
-            @click:prepend-inner="toggleSearch"
-            @click:clear="clear"
+            @click:prepend="toggleSearch"
+            @click:append-outer="clear"
         )
         v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
         v-spacer(v-show="!searchActive")
         v-dialog(v-model="dialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="600px")
             template(v-slot:activator="{on}")
-                v-badge(color="accent" overlap)
+                v-badge(color="accent" overlap v-show="!searchActive")
                     template(v-slot:badge v-if="filterCount > 0") {{filterCount}}
                     v-btn(icon v-show="!searchActive" v-on="on")
                         v-icon filter_list
@@ -36,24 +37,25 @@
                                 template(v-slot:activator="{on}")
                                     v-text-field(v-model="after" readonly v-on="on" label="Дата (от)" hide-details clearable)
                                 v-date-picker(v-model="after" scrollable no-title locale="ru-ru" first-day-of-week="1")
-                                    v-btn(flat color="primary" @click="dialogDateAfter = false") Отменить
+                                    v-btn(text color="primary" @click="dialogDateAfter = false") Отменить
                                     v-spacer
-                                    v-btn(flat color="primary" @click="$refs.dialogAfter.save(after)" ) Принять
+                                    v-btn(text color="primary" @click="$refs.dialogAfter.save(after)" ) Принять
                         v-flex.xs12
                             v-dialog(ref="dialogBefore" v-model="dialogDateBefore" lazy width="290px" :return-value.sync="before")
                                 template(v-slot:activator="{on}")
                                     v-text-field(v-model="before" readonly v-on="on" label="Дата (до)" hide-details clearable)
                                 v-date-picker(v-model="before" scrollable no-title locale="ru-ru" first-day-of-week="1")
-                                    v-btn(flat color="primary" @click="dialogDateBefore = false") Отменить
+                                    v-btn(text color="primary" @click="dialogDateBefore = false") Отменить
                                     v-spacer
-                                    v-btn(flat color="primary" @click="$refs.dialogBefore.save(before)") Принять
+                                    v-btn(text color="primary" @click="$refs.dialogBefore.save(before)") Принять
                 v-divider
                 v-card-actions
-                    v-btn(flat @click="dialog = false" :ripple="{ class: 'red--text' }") Отменить
+                    v-btn(text @click="dialog = false" :ripple="{ class: 'red--text' }") Отменить
                     v-spacer
-                    v-btn(flat color="primary" @click="setFilter" :loading="filtering") Применить
+                    v-btn(text color="primary" @click="setFilter" :loading="filtering") Применить
         v-btn(v-show="!searchActive" icon @click="toggleSearch")
             v-icon search
+        v-progress-linear(:active="isLoading" indeterminate absolute bottom color="secondary")
 </template>
 
 <script>
@@ -65,6 +67,7 @@
         name: "HomeEventsToolbar",
         data(){
             return {
+                isEditing: false,
                 event_cat: '',
                 dialogDateBefore: false,
                 dialogDateAfter: false,
@@ -84,13 +87,14 @@
             this.after = after && ++this.filterCount ? moment(after).format('YYYY-MM-DD') : '';
         },
         computed:{
-            ...mapGetters({categories:'events/categories',filters: 'events/filters'})
+            ...mapGetters({categories:'events/categories',filters: 'events/filters', isLoading: 'events/isLoading'})
         },
         methods:{
             toggleSearch(){
                 this.searchActive = !this.searchActive
             },
             search(){
+                this.searchLoading = true
                 this.$refs.searchInput.blur()
                 this.$store.dispatch(`events/${UPDATE_FILTERS}`,{...this.filters,'search':this.searchText})
             },

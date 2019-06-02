@@ -1,10 +1,9 @@
 <template lang="pug">
     v-app-bar.elevation-0(app light clipped color="#FFF" elevate-on-scroll)
         slot(name='slide-icon')
-        v-scroll-x-transition(hide-on-leave)
-            v-btn(icon @click.stop="$router.go(-1)")
-                v-icon arrow_back
-        v-toolbar-title Новость
+        v-btn(icon @click.stop="$router.go(-1)")
+            v-icon arrow_back
+        v-toolbar-title.pl-0 {{$route.meta.title}}
         v-spacer
         v-btn(icon v-if="shareAvailable")
             v-icon share
@@ -12,7 +11,7 @@
 
 <script>
     export default {
-        name: "HomeEventToolbar",
+        name: "SingleEventsToolbar",
         data(){
             return {
                 shareAvailable: false

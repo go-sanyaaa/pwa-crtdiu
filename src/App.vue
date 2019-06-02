@@ -16,9 +16,10 @@
                 v-container.fluid.grid-list-lg(:pa-0="$vuetify.breakpoint.xsOnly")
                     router-view
             v-bottom-navigation.elevation-24(v-if="$vuetify.breakpoint.smAndDown" app grow v-model="bottom_nav" :value="bottom_nav_show"
-                :height="iphoneX ? '72px' : '52px'" :style="{paddingBottom: iphoneX ? '20px' : ''}")
+                :height="iphoneX ? '72px' : '52px'")
                 v-btn(v-for="menu in navMenu"
-                    text color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="true"
+                    text color="primary" :value="menu.href" :to="menu.route" :key="menu.route"  v-ripple="{ center: true }"
+                    :style="{paddingBottom: iphoneX ? '20px' : ''}"
                 )
                     span.mt-1 {{menu.title}}
                     v-badge(v-if="menu.badge" color="accent")
@@ -85,8 +86,14 @@ export default {
 </script>
 
 <style lang="scss">
+    * {
+        text-decoration: none !important;
+    }
     .v-toolbar .v-badge__badge{
         top: -4px !important;
         right: -4pxs !important;
+    }
+    .v-btn:hover:before, .v-btn:focus:before{
+        opacity: 0 !important;
     }
 </style>

@@ -69,7 +69,7 @@
                 strong.display-1.font-weight-black Вы записаны
         v-expand-transition
             div(v-show="show")
-                v-card-text(v-html="event.excerpt.rendered").pt-0
+                v-card-text(v-html="event.excerpt.rendered").pt-0.event-excerpt
             //v-btn(icon @click="shareEvent(event)" v-if="shareAvailable")
                 v-icon(size="22px").blue-grey--text share
 </template>
@@ -142,4 +142,10 @@ export default {
     }
 }
 </script>
+
+<style lang="sass">
+    .event-excerpt > *
+        margin: 0
+
+</style>
 

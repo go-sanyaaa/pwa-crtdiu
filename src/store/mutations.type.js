@@ -11,6 +11,7 @@ export const LOAD_START = 'loadStart'
 export const LOAD_END = 'loadEnd'
 
 export const SET_EVENTS = 'setEvents'
+export const SET_MY_EVENTS = 'setMyEvents'
 export const UPDATE_EVENT_SUBSCRIBE = 'updateEventSubscribe'
 export const SET_EVENTS_CAT = 'setEventsCat'
 

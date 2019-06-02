@@ -14,6 +14,7 @@ export const FETCH_EVENTS = 'fetchEvents'
 export const SUBSCRIBE_ON_EVENT = 'subscribeOnEvent'
 export const UNSUBSCRIBE_ON_EVENT = 'unSubscribeOnEvent'
 export const FETCH_EVENTS_CAT = 'fetchEventCat'
+export const FETCH_MY_EVENTS = 'fetchMyEvents'
 
 export const UPDATE_FILTERS = 'setFilters'
 

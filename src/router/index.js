@@ -7,72 +7,73 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-      {
-        path: '/',
-        name: 'news',
-        meta: {
-          title: 'Новости',
-          requiresAuth: false,
-        },
-        components: {
-          default: () => import('../views/HomeNews'),
-          toolbar: () => import('../components/Toolbars/HomeNewsToolbar')
-        }
+    {
+      path: '/',
+      name: 'news',
+      meta: {
+        title: 'Новости',
+        requiresAuth: false,
       },
-      {
-        path: '/events',
-        name: 'events',
-        meta: {
-          title: 'События',
-          requiresAuth: false,
-        },
-        components: {
-          default: () => import('../views/HomeEvents'),
-          toolbar: () => import('../components/Toolbars/HomeEventsToolbar')
-        }
+      components: {
+        default: () => import('../views/HomeNews'),
+        toolbar: () => import('../components/Toolbars/NewsToolbar')
+      }
+    },
+    {
+      path: '/news/:id',
+      name: 'single-news',
+      meta: {
+        title: 'Новость',
+        requiresAuth: false,
       },
-      {
-        path: '/events/:id',
-        name: 'events-single',
-        meta: {
-          title: 'События',
-          requiresAuth: false,
-        },
-        props: {default: (route) => {
+      props: {default: true},
+      components: {
+        default: () => import('../views/SingleNews'),
+        toolbar: () => import('../components/Toolbars/SingleNewsToolbar')
+      }
+    },
+    {
+      path: '/events',
+      name: 'events',
+      meta: {
+        title: 'События',
+        requiresAuth: false,
+      },
+      components: {
+        default: () => import('../views/HomeEvents'),
+        toolbar: () => import('../components/Toolbars/EventsToolbar')
+      }
+    },
+    {
+      path: '/events/:id',
+      name: 'events-single',
+      meta: {
+        title: 'Событие',
+        requiresAuth: false,
+      },
+      props: {default: (route) => {
           console.log(route);
           return {
             id: 'Sanya2'
           }
         }},
-        components: {
-          default: () => import('../views/HomeEvent'),
-          toolbar: () => import('../components/Toolbars/HomeEventToolbar')
-        }
-      },
-      {
-        path: '/notify',
-        name: 'notify',
-        meta: {
-          title: 'Уведомления',
-          requiresAuth: true
-        },
-        components: {
-          default: () => import('../views/HomeNotify'),
-          toolbar: () => import('../components/Toolbars/HomeDefaultToolbar')
-        }
-      },
-      {
-        path: '/account',
-        name: 'account',
-        meta: {
-          title: 'Аккаунт',
-          requiresAuth: true
-        },
-        components: {
-          default: () => import('../views/HomeAccount'),
-          toolbar: () => import('../components/Toolbars/HomeDefaultToolbar')
-        }
+      components: {
+        default: () => import('../views/SingleEvent'),
+        toolbar: () => import('../components/Toolbars/SingleEventsToolbar')
       }
+    },
+    {
+      path: '/account',
+      name: 'account',
+      meta: {
+        title: 'Аккаунт',
+        requiresAuth: true
+      },
+      components: {
+        default: () => import('../views/HomeAccount'),
+        toolbar: () => import('../components/Toolbars/DefaultToolbar')
+      }
+    }
   ],
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {

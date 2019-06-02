@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark tabs clipped color="primary" height="52px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
+    v-toolbar.elevation-8(app light clipped color="#FFF" height="56px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
         slot(name='slide-icon')
         v-toolbar-title {{$route.meta.title}}
 </template>

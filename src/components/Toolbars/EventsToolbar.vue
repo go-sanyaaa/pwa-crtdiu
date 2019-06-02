@@ -1,24 +1,24 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark clipped color="primary" height="52px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
+    v-toolbar.elevation-8(app light clipped color="#FFF" height="56px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
         slot(name='slide-icon')
-        v-text-field(solo-inverted autofocus hide-details flat clearable
+        v-text-field(solo autofocus hide-details flat clearable
         type="search"
             label="Поиск"
-            prepend-inner-icon="arrow_back"
+            prepend-icon="arrow_back"
             v-if="searchActive"
             v-model="searchText"
             ref="searchInput"
             @keyup.enter="search"
-            @click:prepend-inner="toggleSearch"
+            @click:prepend="toggleSearch"
             @click:clear="clear"
         )
         v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
         v-spacer(v-show="!searchActive")
         v-dialog(v-model="dialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="600px")
             template(v-slot:activator="{on}")
-                v-badge(color="accent" overlap)
+                v-badge(color="accent" overlap v-show="!searchActive")
                     template(v-slot:badge v-if="filterCount > 0") {{filterCount}}
-                    v-btn(icon v-show="!searchActive" v-on="on")
+                    v-btn(small icon v-show="!searchActive" v-on="on")
                         v-icon filter_list
             v-card
                 v-toolbar(flat)
@@ -56,6 +56,7 @@
                     v-btn(flat color="primary" @click="setFilter" :loading="filtering") Применить
         v-btn(v-show="!searchActive" icon @click="toggleSearch")
             v-icon search
+        v-progress-linear(:active="isLoading" indeterminate absolute bottom height="3").toolbar-progress
 </template>
 
 <script>
@@ -86,7 +87,7 @@
             this.after = after && ++this.filterCount ? moment(after).format('YYYY-MM-DD') : '';
         },
         computed:{
-            ...mapGetters({categories:'events/categories',filters: 'events/filters'})
+            ...mapGetters({categories:'events/categories',filters: 'events/filters',isLoading: 'events/isLoading'})
         },
         methods:{
             toggleSearch(){

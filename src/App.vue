@@ -12,7 +12,7 @@
                 template(#slide-icon)
                     v-toolbar-side-icon(v-if="$vuetify.breakpoint.mdAndUp" @click.stop="drawer = !drawer")
             v-content
-                v-container.fluid.grid-list-lg.fill-height(:pa-0="$vuetify.breakpoint.xsOnly")
+                v-container.fluid.grid-list-lg(:pa-0="$vuetify.breakpoint.xsOnly")
                     router-view
             v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.smAndDown" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show"
                 :height="iphoneX ? '72px' : '52px'" :style="{paddingBottom: iphoneX ? '20px' : ''}")
@@ -88,7 +88,28 @@ export default {
         text-decoration: none;
     }
     .v-toolbar .v-badge__badge{
-        top: 2px !important;
-        right: 0 !important;
+        top: -3px !important;
+        right: -3px !important;
+    }
+    .outlined{
+        border: 1px solid #e6e6e6 !important;
+    }
+    .toolbar-progress{
+        position: absolute !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        margin: 0 !important;
+    }
+    .inner-progress{
+        margin: 0 !important;
+        border-radius: 10px;
+    }
+    .custom-alert{
+        border: none;
+        border-radius: 12px;
+    }
+    .custom-card{
+        border-radius: 12px !important;
+        border: 1px solid #e6e6e6 !important;
     }
 </style>

@@ -1,22 +1,22 @@
 <template lang="pug">
-    v-toolbar.elevation-0(app dark tabs clipped color="primary" height="52px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
+    v-toolbar.elevation-8(app light clipped color="#FFF" height="56px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
         slot(name='slide-icon')
-        v-text-field(solo-inverted autofocus hide-details flat clearable
+        v-text-field(solo autofocus hide-details flat clearable
             type="search"
             label="Поиск"
-            prepend-inner-icon="arrow_back"
+            prepend-icon="arrow_back"
             v-if="searchActive"
             v-model="searchText"
             ref="searchInput"
             @keyup.enter="search"
-            @click:prepend-inner="toggleSearch"
+            @click:prepend="toggleSearch"
             @click:clear="clear"
             )
         v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
         v-spacer(v-show="!searchActive")
         v-btn(v-show="!searchActive" icon @click="toggleSearch")
             v-icon search
-
+        v-progress-linear(:active="isLoading" indeterminate absolute bottom height="3").toolbar-progress
 </template>
 
 <script>
@@ -32,7 +32,7 @@
             }
         },
         computed:{
-            ...mapGetters({filters: 'news/filters'})
+            ...mapGetters({filters: 'news/filters', isLoading: 'news/isLoading'})
         },
         methods: {
             toggleSearch(){

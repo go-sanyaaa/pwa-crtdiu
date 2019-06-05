@@ -12,7 +12,6 @@ export default new Router({
       name: 'news',
       meta: {
         title: 'Новости',
-        requiresAuth: false,
       },
       components: {
         default: () => import('../views/HomeNews'),
@@ -24,9 +23,9 @@ export default new Router({
       name: 'single-news',
       meta: {
         title: 'Новость',
-        requiresAuth: false,
+        hideBottomNav: true
       },
-      props: {default: true},
+      props: {default: true, toolbar: true},
       components: {
         default: () => import('../views/SingleNews'),
         toolbar: () => import('../components/Toolbars/SingleNewsToolbar')
@@ -37,7 +36,6 @@ export default new Router({
       name: 'events',
       meta: {
         title: 'События',
-        requiresAuth: false,
       },
       components: {
         default: () => import('../views/HomeEvents'),
@@ -46,17 +44,12 @@ export default new Router({
     },
     {
       path: '/events/:id',
-      name: 'events-single',
+      name: 'single-event',
       meta: {
         title: 'Событие',
-        requiresAuth: false,
+        hideBottomNav: true
       },
-      props: {default: (route) => {
-          console.log(route);
-          return {
-            id: 'Sanya2'
-          }
-        }},
+      props: {default: true, toolbar: true},
       components: {
         default: () => import('../views/SingleEvent'),
         toolbar: () => import('../components/Toolbars/SingleEventsToolbar')
@@ -67,7 +60,6 @@ export default new Router({
       name: 'account',
       meta: {
         title: 'Аккаунт',
-        requiresAuth: true
       },
       components: {
         default: () => import('../views/HomeAccount'),

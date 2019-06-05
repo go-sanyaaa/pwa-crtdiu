@@ -13,14 +13,14 @@
             @click:clear="clear"
             )
         v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
+        v-progress-linear(:active="isLoading" indeterminate absolute bottom height="3").toolbar-progress
         v-spacer(v-show="!searchActive")
         v-btn(v-show="!searchActive" icon @click="toggleSearch")
             v-icon search
-        v-progress-linear(:active="isLoading" indeterminate absolute bottom height="3").toolbar-progress
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
+    import {mapState} from 'vuex'
     import {UPDATE_FILTERS} from "../../store/actions.type";
 
     export default {
@@ -32,7 +32,7 @@
             }
         },
         computed:{
-            ...mapGetters({filters: 'news/filters', isLoading: 'news/isLoading'})
+            ...mapState('news',['filters','isLoading'])
         },
         methods: {
             toggleSearch(){

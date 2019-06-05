@@ -1,5 +1,12 @@
-import {FETCH_NEWS, LOAD_NEWS, UPDATE_FILTERS, CHANGE_PAGE, LOAD_EVENTS, GET_RECORD} from "./actions.type";
-import {LOAD_START, LOAD_END, SET_FILTERS, FETCH_END, SET_PAGE} from "./mutations.type";
+import {
+    FETCH_NEWS,
+    LOAD_NEWS,
+    UPDATE_FILTERS,
+    CHANGE_PAGE,
+    GET_RECORD,
+    INIT_RECORDS, FETCH_RECORDS_CAT
+} from "./actions.type";
+import {LOAD_START, LOAD_END, SET_FILTERS, FETCH_END, SET_PAGE, SET_ERROR, SET_RECORDS_CAT} from "./mutations.type";
 import ApiService, {NewsService} from "../common/api.service";
 
 const state = {
@@ -10,7 +17,9 @@ const state = {
         per_page: 10,
         page: 1
     },
-    records: []
+    records: [],
+    categories: [],
+    errors: false
 };
 
 const mutations = {
@@ -18,6 +27,7 @@ const mutations = {
         state.isLoading = true
     },
     [LOAD_END](state,{news = [],total = 0}){
+        state.errors = false
         state.records = news || state.records
         state.total = total || state.total
         state.isLoading = false
@@ -26,19 +36,32 @@ const mutations = {
         state.filters = data;
     },
     [FETCH_END](state,data){
+        state.errors = false
         state.records = [...state.records,...data]
         state.isLoading = false
     },
     [SET_PAGE](state,data){
         state.pagination.page = data
+    },
+    [SET_RECORDS_CAT](state,data){
+        state.categories = data
     }
 };
 
 const actions = {
+    [INIT_RECORDS](context){
+        context.commit(LOAD_START);
+        return Promise.all([
+            context.dispatch(FETCH_RECORDS_CAT),
+            context.dispatch(LOAD_NEWS)
+        ]).then(resp => {
+            return resp.every(({status}) => status === 200 )
+        })
+    },
     [LOAD_NEWS](context){
         context.commit(LOAD_START)
-        const filters = context.getters.filters
-        const pagination = context.getters.pagination
+        const filters = context.state.filters
+        const pagination = context.state.pagination
         pagination.page = 1
         return NewsService.query({...filters,...pagination})
             .then(resp => {
@@ -50,8 +73,8 @@ const actions = {
     },
     [FETCH_NEWS](context){
         context.commit(LOAD_START)
-        const filters = context.getters.filters
-        const pagination = context.getters.pagination
+        const filters = context.state.filters
+        const pagination = context.state.pagination
         NewsService.query({...filters,...pagination})
             .then(resp => {
                 const news = resp.data
@@ -60,19 +83,35 @@ const actions = {
     },
     [GET_RECORD](context,{id}){
         context.commit(LOAD_START)
-        return ApiService.get(`wp/v2/posts/${id}`)
+        return Promise.all([
+            ApiService.get(`wp/v2/posts/${id}`),
+            context.dispatch(FETCH_RECORDS_CAT)
+        ])
             .then(resp => {
-                const {data} = resp
+                const {data} = resp[0]
                 context.commit(LOAD_END,{})
                 return data
             })
     },
 
+    [FETCH_RECORDS_CAT](context){
+        return new Promise((res,rej) => {
+            ApiService.get('wp/v2/categories')
+                .then(resp => {
+                    context.commit(SET_RECORDS_CAT,resp.data)
+                    res({status:resp.status,text: resp.statusText})
+                })
+                .catch(err => {
+                    context.commit(SET_ERROR,`Не удалось загрузить данные с сервера: ${err.message}`)
+                })
+        })
+    },
+
     [UPDATE_FILTERS](context,filters){
         context.commit(SET_FILTERS, filters)
-        return context.dispatch(LOAD_NEWS)
+        return context.dispatch(INIT_RECORDS)
     },
-    [CHANGE_PAGE](context,page = ++context.getters.pagination.page){
+    [CHANGE_PAGE](context,page = ++context.state.pagination.page){
         context.commit(SET_PAGE,page)
         if(page === 1){
             context.dispatch(LOAD_NEWS)
@@ -83,11 +122,6 @@ const actions = {
 };
 
 const getters = {
-    records: state => state.records,
-    isLoading: state => state.isLoading,
-    total: state => state.total,
-    filters: state => state.filters,
-    pagination: state => state.pagination,
     newsById: state => id =>  {
         return state.records.find(news => news.id === Number(id))
     }

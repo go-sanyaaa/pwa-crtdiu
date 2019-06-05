@@ -20,3 +20,4 @@ export const UPDATE_FILTERS = 'setFilters'
 
 export const INIT_RECORDS = 'initRecords'
 export const GET_RECORD = 'getRecord'
+export const FETCH_RECORDS_CAT = 'fetchRecordsCat'

@@ -1,7 +1,10 @@
 <template lang="pug">
     v-layout.row.wrap.ma-0
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-for="event in events" :key="event.id")
-            event-card(:event="event" :categories="categories").custom-card
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-if="errors")
+            v-alert(type="error" icon="new_releases" :value="errors").custom-alert
+                template(v-for="error in errors") {{error}}
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-for="event in records" :key="event.id")
+            app-event-card(:event="event" :categories="categories").custom-card
         v-flex.text-xs-center.xs12(
             v-if="(isLoading && !eventsEmpty) || canLoad"
             )
@@ -9,15 +12,16 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
+    import {mapState} from 'vuex'
     import {FETCH_EVENTS, INIT_RECORDS, LOAD_EVENTS} from "../store/actions.type";
-    import EventCard from "../components/EventCard"
+    import appEventCard from "../components/appEventCard"
 
     export default {
         name: "HomeEvents",
         props: ['id'],
         data(){
             return {
+                offline: false
             }
         },
         created() {
@@ -27,24 +31,19 @@
             shareAvailable: navigator.share !== undefined ? true : false
         },
         computed: {
-            ...mapGetters({
-                events: 'events/records',
-                categories: 'events/categories',
-                isLoading: 'events/isLoading',
-                pagination: 'events/pagination',
-                total: 'events/total',
-            }),
+            ...mapState('events',['errors','total','pagination','isLoading','categories','records']),
             canLoad(){
                 const {pagination:{page,per_page},total} = this
                 return per_page * page < total
             },
             eventsEmpty(){
-                return this.events.length === 0
+                return this.records.length === 0
             }
         },
         methods: {
             init(){
                 if(this.eventsEmpty) this.$store.dispatch(`events/${INIT_RECORDS}`)
+
             },
             load(){
                 this.$store.dispatch(`events/${LOAD_EVENTS}`)
@@ -54,7 +53,7 @@
             }
         },
         components: {
-            EventCard
+            appEventCard
         }
     }
 </script>

@@ -1,6 +1,6 @@
 {
-  "name": "Центр развития творчества детей и юношества Кировского района г.Кемерово",
-  "short_name": "Центр творчеств",
+  "name": "Центр творчества. Кемерово",
+  "short_name": "ЦРТДиЮ",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
@@ -17,5 +17,5 @@
   "display": "standalone",
   "gcm_sender_id": "723598357825",
   "background_color": "#FFFFFF",
-  "theme_color": "#D50000"
+  "theme_color": "#FFFFFF"
 }

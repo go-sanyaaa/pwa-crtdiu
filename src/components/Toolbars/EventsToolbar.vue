@@ -13,6 +13,7 @@
             @click:clear="clear"
         )
         v-toolbar-title(v-show="!searchActive") {{$route.meta.title}}
+        v-progress-linear(:active="isLoading" indeterminate absolute bottom height="3").toolbar-progress
         v-spacer(v-show="!searchActive")
         v-dialog(v-model="dialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="600px")
             template(v-slot:activator="{on}")
@@ -23,8 +24,6 @@
             v-card
                 v-toolbar(flat)
                     v-toolbar-title Фильтр событий
-                //v-card-title
-                    span.headline Фильтр событий
                 v-divider
                 v-container()
                     v-layout.row.wrap
@@ -56,12 +55,11 @@
                     v-btn(flat color="primary" @click="setFilter" :loading="filtering") Применить
         v-btn(v-show="!searchActive" icon @click="toggleSearch")
             v-icon search
-        v-progress-linear(:active="isLoading" indeterminate absolute bottom height="3").toolbar-progress
 </template>
 
 <script>
     import moment from 'moment'
-    import {mapGetters} from 'vuex'
+    import {mapState} from 'vuex'
     import {UPDATE_FILTERS} from "../../store/actions.type";
 
     export default {
@@ -87,7 +85,7 @@
             this.after = after && ++this.filterCount ? moment(after).format('YYYY-MM-DD') : '';
         },
         computed:{
-            ...mapGetters({categories:'events/categories',filters: 'events/filters',isLoading: 'events/isLoading'})
+            ...mapState('events',['categories','filters','isLoading'])
         },
         methods:{
             toggleSearch(){

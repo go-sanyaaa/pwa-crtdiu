@@ -15,7 +15,7 @@ import {
 
 import {
     SET_EVENTS_CAT,
-    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE, SET_MY_EVENTS
+    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE, SET_MY_EVENTS, SET_ERROR
 } from "./mutations.type";
 
 const state = {
@@ -28,31 +28,29 @@ const state = {
     },
     categories: [],
     records: [],
-    myEvents: []
+    myEvents: [],
+    errors: false
 }
 
 const getters = {
-    catCount: state => state.categories.length,
-    records: state =>  state.records,
-    categories: state => state.categories,
-    total: state => state.total,
-    isLoading: state => state.isLoading,
-    filters: state => state.filters,
-    pagination: state => state.pagination,
-    myEvents: state => state.myEvents,
+    eventById: state => id =>  {
+        return state.records.find(event => event.id === Number(id))
+    }
 }
 
 const actions = {
-    // [GET_RECORD](context,params){
-    //     const {event_id} = params;
-    //     return new Promise((res,rej)=>{
-    //         ApiService.get(`wp/v2/events/${event_id}`)
-    //             .then(resp => {
-    //                 context.commit(SET_EVENT,resp.data)
-    //                 res({status:resp.status,text: resp.statusText})
-    //             })
-    //     })
-    // },
+    [GET_RECORD](context,{id}){
+        context.commit(LOAD_START)
+        return Promise.all([
+            ApiService.get(`wp/v2/events/${id}`),
+            context.dispatch(FETCH_EVENTS_CAT)
+        ])
+            .then(resp => {
+                const {data} = resp[0]
+                context.commit(LOAD_END,{})
+                return data
+            })
+    },
     [INIT_RECORDS](context){
         context.commit(LOAD_START);
         return Promise.all([
@@ -63,10 +61,10 @@ const actions = {
         })
     },
     [LOAD_EVENTS](context){
-        context.commit(FETCH_START)
+        context.commit(LOAD_START)
         context.commit(SET_PAGE,1)
-        const filters = context.getters.filters
-        const pagination = context.getters.pagination
+        const filters = context.state.filters
+        const pagination = context.state.pagination
 
         return new Promise((res,rej) => {
             ApiService.get('wp/v2/events',{...filters,...pagination})
@@ -76,13 +74,16 @@ const actions = {
                     context.commit(LOAD_END,{records,total});
                     res({status:resp.status,text: resp.statusText})
                 })
+                .catch(err => {
+                    context.commit(SET_ERROR,`Не удалось загрузить данные с сервера: ${err.message}`)
+                })
         })
     },
 
-    [FETCH_EVENTS](context,params = {}){
-        context.commit(FETCH_START);
-        const filters = context.getters.filters
-        const pagination = context.getters.pagination
+    [FETCH_EVENTS](context){
+        context.commit(LOAD_START);
+        const filters = context.state.filters
+        const pagination = context.state.pagination
         context.commit(SET_PAGE,++pagination.page)
         return new Promise((res,rej) => {
             ApiService.get('wp/v2/events',{...filters,...pagination})
@@ -91,13 +92,15 @@ const actions = {
                     context.commit(FETCH_END,{records})
                     res({status:resp.status,text: resp.statusText})
                 })
+                .catch(err => {
+                    context.commit(SET_ERROR,`Не удалось загрузить данные с сервера: ${err.message}`)
+                })
         })
     },
 
-    [FETCH_MY_EVENTS]({commit},data = {}){
-        const {params} = data
+    [FETCH_MY_EVENTS]({commit}){
         return new Promise((res,rej) => {
-            ApiService.get('wp/v2/users/me/events',params)
+            ApiService.get('wp/v2/users/me/events')
                 .then(resp => {
                     const {data} = resp
                     if(data.status == false){
@@ -122,10 +125,12 @@ const actions = {
                     context.commit(SET_EVENTS_CAT,resp.data)
                     res({status:resp.status,text: resp.statusText})
                 })
+                .catch(err => {
+                    context.commit(SET_ERROR,`Не удалось загрузить данные с сервера: ${err.message}`)
+                })
         })
     },
     [SUBSCRIBE_ON_EVENT](context,event_id){
-        console.log(`Subscribe on ${event_id}`)
         return new Promise((res,rej) => {
             ApiService.post(`wp/v2/events/${event_id}`)
                 .then(resp => {
@@ -138,11 +143,9 @@ const actions = {
         })
     },
     [UNSUBSCRIBE_ON_EVENT](context,event_id){
-        console.log(`unSubscribe on ${event_id}`)
         return new Promise((res,rej) => {
             ApiService.delete(`wp/v2/events/${event_id}`)
                 .then(resp => {
-                    console.log(resp)
                     const {data} = resp
                     if(data.status){
                         context.commit(UPDATE_EVENT_SUBSCRIBE,{event_id})
@@ -157,16 +160,15 @@ const mutations = {
     [LOAD_START](state){
         state.isLoading = true
     },
-    [LOAD_END](state,{records, total}){
-        state.total = total;
-        state.records = records;
+    [LOAD_END](state,{records = [], total = 0}){
+        state.errors = false
+        state.total = total || state.total;
+        state.records = records || state.records;
         state.isLoading = false;
     },
 
-    [FETCH_START](state){
-        state.isLoading = true
-    },
     [FETCH_END](state,{records}){
+        state.errors = false
         state.records = [...state.records,...records];
         state.isLoading = false
     },
@@ -191,6 +193,11 @@ const mutations = {
 
     [SET_MY_EVENTS](state,data){
         state.myEvents = data
+    },
+
+    [SET_ERROR](state,data){
+        state.isLoading = false
+        state.errors = data
     }
 }
 

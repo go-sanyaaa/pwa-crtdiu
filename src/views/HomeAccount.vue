@@ -107,7 +107,7 @@
 
 <script>
     import moment from "moment"
-    import {mapGetters} from 'vuex'
+    import {mapState} from 'vuex'
     import {AUTH_LOGOUT, AUTH_LOGIN, MODIFY_USER, FETCH_MY_EVENTS} from "../store/actions.type";
     export default {
         name: 'HomeAccount',
@@ -128,7 +128,8 @@
             this.getMyEvents()
         },
         computed: {
-            ...mapGetters({user: 'auth/user',isAuthenticated: 'auth/isAuthenticated', events: 'events/myEvents'}),
+            ...mapState('auth',['user','isAuthenticated']),
+            ...mapState('events',['myEvents']),
             alignContent(){
                 return this.$vuetify.breakpoint.xsOnly ? 'align-end' : 'align-center'
             },
@@ -136,7 +137,7 @@
                 return this.user.role == 'administrator' ? 'Администратор' : 'Подписчик'
             },
             lastActiveEvents(){
-                return this.events.filter(event => true)
+                return this.myEvents.filter(event => true)
             }
         },
         methods: {

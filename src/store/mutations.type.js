@@ -18,3 +18,4 @@ export const SET_EVENTS_CAT = 'setEventsCat'
 export const SET_FILTERS = 'setFilters'
 
 export const SET_PAGE = 'setPage'
+export const SET_RECORDS_CAT = 'setRecordsCat'

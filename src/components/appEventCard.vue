@@ -66,7 +66,7 @@
                                 v-btn.caption(color="accent" depressed @click="unSubscribe") Отменить запись!
                     v-btn(icon @click="show = !show").ma-0.grey--text
                         v-icon {{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
-        v-snackbar(v-model="snackbar" :timeout="3000" :multi-line="$vuetify.breakpoint.smAndDown" :color="color")
+        v-snackbar(v-model="snackbar" :timeout="3000" :multi-line="$vuetify.breakpoint.smAndDown" :color="color" :top="true").mt-2
             | {{text}}
             v-btn(flat @click="snackbar = false") ОК
         v-expand-transition
@@ -81,7 +81,7 @@
     import {DEFAULT_IMG_URL} from "../common/config";
     import {SUBSCRIBE_ON_EVENT,UNSUBSCRIBE_ON_EVENT} from "../store/actions.type";
     export default {
-        name: "eventCard",
+        name: "appEventCard",
         props: ['event','categories'],
         data(){
             return {

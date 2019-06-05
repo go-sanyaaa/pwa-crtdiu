@@ -1,7 +1,9 @@
 <template lang="pug">
     #app
         v-app#inspire
-            v-navigation-drawer(v-if="$vuetify.breakpoint.mdAndUp" v-model="drawer" fixed app disable-resize-watcher)
+            v-navigation-drawer(v-if="$vuetify.breakpoint.mdAndUp"
+                    v-model="drawer" fixed app disable-resize-watcher
+                )
                 v-list
                     v-list-tile(v-for="(item, i) in navMenu" :key="`navitem${i}`" append :to="item.route")
                         v-list-tile-action
@@ -12,13 +14,15 @@
                 template(#slide-icon)
                     v-toolbar-side-icon(v-if="$vuetify.breakpoint.mdAndUp" @click.stop="drawer = !drawer")
             v-content
-                v-container.fluid.grid-list-lg(:pa-0="$vuetify.breakpoint.xsOnly")
+                v-container.fluid.grid-list-lg.px-0(:pt-0="$vuetify.breakpoint.xsOnly")
                     router-view
-            v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.smAndDown" app clipped fixed :active.sync="bottom_nav" :value="bottom_nav_show"
-                :height="iphoneX ? '72px' : '52px'" :style="{paddingBottom: iphoneX ? '20px' : ''}")
-                v-btn(v-for="menu in navMenu"
-                    flat color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="true"
+            v-bottom-nav.elevation-24(v-if="$vuetify.breakpoint.smAndDown" app clipped fixed
+                    :active.sync="bottom_nav" :value="bottom_nav_show"
+                    :height="iphoneX ? '72px' : '52px'" :style="{paddingBottom: iphoneX ? '20px' : ''}"
                 )
+                v-btn(v-for="menu in navMenu"
+                    flat color="primary" :value="menu.href" :to="menu.route" :key="menu.route" :ripple="{ center: true }"
+                    )
                     span.mt-1 {{menu.title}}
                     v-badge(v-if="menu.badge" color="accent")
                         template(#badge)
@@ -55,8 +59,6 @@ export default {
             deep: true
         })
 
-        console.log("Created")
-
         // Really basic check for the ios platform
         // https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
         var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -85,7 +87,7 @@ export default {
 
 <style lang="scss">
     .tag{
-        text-decoration: none;
+        text-decoration: none !important;
     }
     .v-toolbar .v-badge__badge{
         top: -3px !important;
@@ -105,11 +107,31 @@ export default {
         border-radius: 10px;
     }
     .custom-alert{
-        border: none;
-        border-radius: 12px;
+        border: none !important;
+        border-radius: 12px !important;
+        margin: 0 !important;
     }
     .custom-card{
         border-radius: 12px !important;
         border: 1px solid #e6e6e6 !important;
+    }
+    .comment-content *{
+        margin: 0 !important;
+    }
+    .comment-card{
+        border: 1px solid #e6e6e6 !important;
+        border-radius: 10px;
+        &:last-child{
+            margin-bottom: 0 !important;
+        }
+    }
+    .inner-comment{
+        &:nth-child(2n-1){
+            background: #f5f5f5;
+        }
+        border-radius: 12px;
+    }
+    .custom-rounded{
+        border-radius: 12px !important;
     }
 </style>

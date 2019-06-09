@@ -1,10 +1,10 @@
 <template lang="pug">
     v-layout.row.wrap.ma-0
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-for="item in records" :key="item.id")
-            v-card.elevation-0.custom-card
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-for="item in records" :key="item.id")
+            v-card(flat).custom-elevation
                 router-link.news-link(:to="`/news/${item.id}`")
-                    v-img(:src="getPostImages(item)" height="240px" :style="{borderRadius: '12px 12px 0px 0px'}")
-                        v-container.grid-list-xs
+                    v-img(:src="getPostImages(item)" height="240px")
+                        v-container
                             v-layout(row wrap align-content-start)
                                 template(v-for='cat in getRecordCats(item.categories)')
                                     v-chip(small dark color="secondary").d-flex.shrink {{cat.name}}

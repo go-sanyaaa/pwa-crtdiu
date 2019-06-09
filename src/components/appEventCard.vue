@@ -4,17 +4,16 @@
             v-img(
                 :src="getPostImages(event)" height="200px"
                 gradient="to top, rgba(0,0,0,.44), rgba(0,0,0,.44)"
-                :style="{borderRadius: '12px 12px 0px 0px'}"
             )
-                v-layout(fill-height align-end).fluid.pl-2
+                v-layout.fluid.pl-2.align-end.fill-height
                     v-flex.white--text
                         v-flex
-                            v-layout(column)
+                            v-layout.column
                                 v-flex.pb-0
                                     strong.text-uppercase.font-weight-medium {{getHumanDate(event.event_date,"MMMM YYYY")}}
                                 v-flex.py-0
                                     strong.display-2.font-weight-regular.font-weight-black {{getHumanDate(event.event_date,"DD")}}
-                        v-flex(column justify-center).pt-1
+                        v-flex.column.justify-center.pt-1
                             v-chip(dark).green.ml-0.font-weight-medium.mr-2
                                 v-avatar.mr-2.pl-3
                                     v-icon access_time
@@ -33,55 +32,25 @@
                     template(v-for="cat in getEventCats(event.event_cat)")
                         v-chip.ml-0(color="blue" outline small dark) {{cat.name}}
                 v-flex.shrink.row.no-wrap.pt-0
-                    v-dialog(width="500" v-model="dialog")
-                        template(v-slot:activator="{on}")
-                            v-btn.caption(icon text v-on="on").ma-0.grey--text
-                                v-icon(v-if="!event.is_register") person_add
-                                v-icon(v-else color="green") check_circle_outline
-                        v-card(v-if="!event.is_register")
-                            v-toolbar(flat light)
-                                v-toolbar-title Подтверждение участия
-                            v-divider
-                            v-card-text
-                                | Вы действительно хотите принять участие?
-                                br
-                                | Мероприятие - {{event.title.rendered}}  состоится {{getHumanDate(event.event_date,"LL")}}
-                            v-divider
-                            v-card-actions
-                                v-btn.caption(@click="dialog = false" flat) Закрыть
-                                v-spacer
-                                v-btn.caption(color="green" depressed dark @click="subscribe") Подтверждаю
-                        v-card(v-else)
-                            v-toolbar(flat dark color="green")
-                                v-toolbar-title Вы учавствуете!
-                            v-divider
-                            v-card-text
-                                | В данный момент вы зарегистрированны на мероприятие.
-                                br
-                                | Вы действительно хотите отменить эту запись?
-                            v-divider
-                            v-card-actions
-                                v-btn.caption(@click="dialog = false" flat) Закрыть
-                                v-spacer
-                                v-btn.caption(color="accent" depressed @click="unSubscribe") Отменить запись!
+                    app-event-subscribe(v-slot="{open}" :event="event")
+                        v-btn(icon text @click="open").ma-0.grey--text
+                            v-icon(v-if="!event.is_register") person_add
+                            v-icon(v-else color="green") check_circle_outline
                     v-btn(icon @click="show = !show").ma-0.grey--text
                         v-icon {{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
-        v-snackbar(v-model="snackbar" :timeout="3000" :multi-line="$vuetify.breakpoint.smAndDown" :color="color" :top="true").mt-2
-            | {{text}}
-            v-btn(flat @click="snackbar = false") ОК
         v-expand-transition
             div(v-show="show")
                 v-card-text(v-html="event.excerpt.rendered").pt-0.event-excerpt
-            //v-btn(icon @click="shareEvent(event)" v-if="shareAvailable")
-                v-icon(size="22px").blue-grey--text share
 </template>
 
 <script>
     import moment from 'moment'
+    import {mapState} from "vuex"
     import {DEFAULT_IMG_URL} from "../common/config";
-    import {SUBSCRIBE_ON_EVENT,UNSUBSCRIBE_ON_EVENT} from "../store/actions.type";
+    import AppEventSubscribe from "./appEventSubscribe";
     export default {
         name: "appEventCard",
+        components: {AppEventSubscribe},
         props: ['event','categories'],
         data(){
             return {
@@ -89,12 +58,11 @@
                 dialog: false,
                 isRegister: false,
                 loading: false,
-                snackbar: false,
-                color: '',
-                text: ''
             }
         },
-        inject: ['shareAvailable'],
+        computed:{
+            ...mapState('auth',['isAuthenticated']),
+        },
         methods: {
             getPostImages(post){
                 if(post.better_featured_image){
@@ -118,33 +86,6 @@
                     url: event.link
                 })
             },
-            subscribe(){
-                this.dialog = false;
-                this.loading = true;
-                const {id} = this.event;
-                this.$store.dispatch(`events/${SUBSCRIBE_ON_EVENT}`,id)
-                    .then(resp => {
-                        console.log(resp)
-                        this.loading = false
-                        this.color = 'success'
-                        this.text = 'Вы успешно записаны на мероприятие'
-                        this.snackbar = true
-                    })
-                    .catch(err => {
-                        console.log('Event catch')
-                    })
-            },
-            unSubscribe(){
-                this.dialog = false;
-                this.loading = true;
-                const {id} = this.event;
-                this.$store.dispatch(`events/${UNSUBSCRIBE_ON_EVENT}`,id)
-                    .then(resp => {
-                        this.color = 'error'
-                        this.text = 'Запись на мероприятие отменена'
-                        this.snackbar = true
-                    })
-            }
         }
     }
 </script>

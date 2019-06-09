@@ -1,10 +1,10 @@
 <template lang="pug">
     v-layout.row.wrap.ma-0
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-if="errors")
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-if="errors")
             v-alert(type="error" icon="new_releases" :value="errors").custom-alert
                 template(v-for="error in errors") {{error}}
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-for="event in records" :key="event.id")
-            app-event-card(:event="event" :categories="categories").custom-card
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-for="event in records" :key="event.id")
+            app-event-card(:event="event" :categories="categories").custom-elevation
         v-flex.text-xs-center.xs12(
             v-if="(isLoading && !eventsEmpty) || canLoad"
             )

@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-card.elevation-0.custom-card
+    v-card(flat).custom-elevation
         v-snackbar(v-model="snackbar" :timeout="3000" :multi-line="$vuetify.breakpoint.smAndDown" color="success" :top="true").mt-2
             | Комментарий успешно добавлен
             v-btn(flat @click="snackbar = false") ОК
@@ -15,7 +15,10 @@
                                 v-icon(left) add_comment
                                 | Добавить комментарий
                     template(v-else)
-                        v-alert(:value="true" type="info").custom-alert Оставлять комментарии может только авторизованный пользователь!
+                        v-alert(:value="true" type="info")
+                            | Оставлять комментарии может только авторизованный пользователь!
+                            br
+                            v-btn(depressed :to="{ name: 'account'}").mx-0 Войти
                 v-flex.xs12.pa-2.mb-2(v-if="comments.length == 0")
                     span.subheading.font-weight-light Нет комментариев. Станьте первым!
                 v-flex.xs12(v-for="comment in commentsTree" :key="`comment-id-${comment.id}`").mb-2.comment-card
@@ -28,7 +31,7 @@
                                 strong {{comment.author_name}}
                                 br
                                 span {{getHumanDate(comment.date)}}
-                            app-comments-dialog(v-slot="data" @send="commentSended" v-bind="{comment,post}").d-flex.shrink
+                            app-comments-dialog(v-if="isAuthenticated" v-slot="data" @send="commentSended" v-bind="{comment,post}").d-flex.shrink
                                 v-btn(icon small @click="data.open" ).ma-0
                                     v-icon(color="grey" small) reply
                     v-flex.xs12(v-html="comment.content.rendered").comment-content

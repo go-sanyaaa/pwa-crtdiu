@@ -1,7 +1,6 @@
 <template lang="pug">
-    v-layout.row.wrap.ma-0.fill-height(v-if="!isAuthenticated"
-        :class="[alignContent]")
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3
+    v-layout.row.wrap.ma-0(v-if="!isAuthenticated")
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0
             v-card-text
                 v-form#form1(@submit.prevent="auth")
                     v-text-field(prepend-icon="alternate_email" name="login" label="Электронная почта" type="text" v-model="email" autocomplete="email")
@@ -11,9 +10,10 @@
             v-card-actions
                 v-btn.caption(color="grey" flat) Забыли пароль?
                 v-spacer
-                v-btn.caption(color="accent" flat) Создать аккаунт
+                app-registration(v-slot="{open}")
+                    v-btn(color="accent" flat @click="open") Создать аккаунт
     v-layout.row.wrap.ma-0.align-start(v-else)
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0
             v-card.elevation-0.custom-card
                 v-list(two-line)
                     v-list-tile
@@ -109,10 +109,13 @@
     import moment from "moment"
     import {mapState} from 'vuex'
     import {AUTH_LOGOUT, AUTH_LOGIN, MODIFY_USER, FETCH_MY_EVENTS} from "../store/actions.type";
+    import AppRegistration from "../components/appRegistration";
     export default {
         name: 'HomeAccount',
+        components: {AppRegistration},
         data(){
             return {
+                dialog: '',
                 firstName: '',
                 lastName: '',
                 email: '',
@@ -130,9 +133,6 @@
         computed: {
             ...mapState('auth',['user','isAuthenticated']),
             ...mapState('events',['myEvents']),
-            alignContent(){
-                return this.$vuetify.breakpoint.xsOnly ? 'align-end' : 'align-center'
-            },
             role(){
                 return this.user.role == 'administrator' ? 'Администратор' : 'Подписчик'
             },

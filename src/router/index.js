@@ -37,6 +37,7 @@ export default new Router({
       meta: {
         title: 'События',
       },
+      props: {default: true, toolbar: true},
       components: {
         default: () => import('../views/HomeEvents'),
         toolbar: () => import('../components/Toolbars/EventsToolbar')

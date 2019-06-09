@@ -1,18 +1,39 @@
 <template lang="pug">
-    v-layout.row.wrap.ma-0
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3
-            v-card.elevation-0.custom-card(v-show="event")
-                v-img(v-if="event" :src="getPostImages(event)"  height="200px")
-                    v-container(fill-height)
-                        v-layout(row wrap).align-content-start
-                            template(v-for='cat in getRecordCats(event.event_cat)')
-                                v-chip(small dark color="secondary" disable).d-flex.shrink {{cat.name}}
+    v-layout.row.wrap.ma-0#scroll-target
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-if="event")
+            v-card(flat).custom-elevation
+                v-card-text.py-0(:style="{background:'#03a9f4'}")
+                    v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0.text-xs-center.py-1
+                        v-chip(color="secondary" dark)
+                            v-icon.mr-2 calendar_today
+                            span.title.font-weight-bold {{getHumanDate(event.date)}}
+                v-img(:src="getPostImages(event)"  height="200px")
+                    v-container.fill-height.pa-3
+                        v-layout.row.fill-height.ma-0
+                            v-flex.xs12.pa-0
+                                v-layout.row.wrap.ma-0
+                                    template(v-for='cat in getRecordCats(event.event_cat)')
+                                        v-chip(small dark color="secondary" disable).d-flex.shrink {{cat.name}}
                 v-divider
-                v-card-text(v-if="event")
-                    span.caption.grey--text.font-weight-medium {{getHumanDate(event.date)}}
+                v-card-actions.py-1.px-3
+                    v-chip(dark color="success" disabled text-color="white").ml-0.font-weight-medium
+                        v-avatar.mr-2.pl-3
+                            v-icon access_time
+                        | {{getHumanDate(event.event_date,"LT")}} - {{getHumanDate(event.event_date_end,"LT")}}
+                    v-tooltip(bottom)
+                        template(v-slot:activator="{on}")
+                            v-chip(v-on="on" color="#FFF" text-color="grey" disabled).font-weight-bold.mx-0
+                                v-icon people
+                                span.ml-1 {{event.persons}}
+                        span Количество участников
+                    v-spacer
+                    app-event-subscribe(v-slot="{open}" :event="event")
+                        v-btn(icon text @click="open").ma-0.grey--text
+                            v-icon(v-if="!event.is_register") person_add
+                            v-icon(v-else color="green") check_circle_outline
                 v-divider
-                v-card-text(v-if="event" v-html="event.content.rendered")#page__content
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-if="event")
+                v-card-text( v-html="event.content.rendered")#page__content
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-if="event")
             app-comments(:post="event")
 </template>
 
@@ -22,9 +43,10 @@
     import {GET_RECORD} from "../store/actions.type";
     import {mapGetters, mapState} from "vuex"
     import AppComments from "../components/appComments"
+    import AppEventSubscribe from "../components/appEventSubscribe";
 
     export default {
-        components: {AppComments},
+        components: {AppEventSubscribe, AppComments},
         props: ['id'],
         data(){
             return {
@@ -35,7 +57,7 @@
         name: "singleEvent",
         computed: {
             ...mapGetters({getEventById: 'events/eventById'}),
-            ...mapState('events',['categories'])
+            ...mapState('events',['categories']),
         },
         created() {
             const {id} = this
@@ -58,8 +80,8 @@
                     return DEFAULT_IMG_URL
                 }
             },
-            getHumanDate(date){
-                return moment(date).locale('ru').format('LLL')
+            getHumanDate(date,format = 'LL'){
+                return moment(date).locale('ru').format(format)
             },
             getRecordCats(record_cats = []){
                 return record_cats.map(cat_id => this.categories.find(cat => cat.id === cat_id))

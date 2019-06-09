@@ -111,9 +111,11 @@ export default {
         border-radius: 12px !important;
         margin: 0 !important;
     }
+    .custom-elevation{
+        box-shadow: 0 0 10px 2px rgba(0,0,0,0.1) !important;
+    }
     .custom-card{
-        border-radius: 12px !important;
-        border: 1px solid #e6e6e6 !important;
+        box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.1) !important;
     }
     .comment-content *{
         margin: 0 !important;

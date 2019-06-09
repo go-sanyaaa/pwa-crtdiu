@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-toolbar.elevation-8(app light clipped color="#FFF" height="56px" prominent :scroll-off-screen="$vuetify.breakpoint.xsOnly")
+    v-toolbar(app light clipped color="#FFF" height="56px" prominent :scroll-off-screen="$vuetify.breakpoint.smAndDown").custom-elevation
         slot(name='slide-icon')
         v-text-field(solo autofocus hide-details flat clearable
         type="search"

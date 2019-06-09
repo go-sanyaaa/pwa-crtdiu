@@ -1,10 +1,10 @@
 <template lang="pug">
-    v-toolbar.elevation-8(app light clipped color="#FFF" height="56px" prominent)
+    v-toolbar(app light clipped color="#FFF" height="56px" prominent).custom-elevation
         slot(name='slide-icon')
         v-scroll-x-transition(hide-on-leave)
             v-btn(icon @click.stop="$router.go(-1)")
                 v-icon arrow_back
-        v-toolbar-title(:class="{'ml-0':$vuetify.breakpoint.smAndDown}" v-html="news ? news.title.rendered : 'Новость'")
+        v-toolbar-title(:class="{'ml-0':$vuetify.breakpoint.smAndDown}" v-html="news ? news.title.rendered : 'Загрузка...'")
         v-progress-linear(:active="isLoading" indeterminate absolute bottom height="3").toolbar-progress
         v-spacer
         v-btn(icon v-if="shareAvailable && news" @click="shareNews(news)")
@@ -14,6 +14,7 @@
 <script>
     import {GET_RECORD} from "../../store/actions.type";
     import {mapGetters} from "vuex"
+
     export default {
         name: "HomeEventToolbar",
         data(){

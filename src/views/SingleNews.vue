@@ -1,18 +1,18 @@
 <template lang="pug">
     v-layout.row.wrap.ma-0
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0
             v-card.elevation-0.custom-card(v-show="news")
                 v-img(v-if="news" :src="getPostImages(news)"  height="200px")
-                    v-container(fill-height)
-                        v-layout(row wrap).align-content-start
+                    v-container
+                        v-layout(row wrap).align-start
                             template(v-for='cat in getRecordCats(news.categories)')
                                 v-chip(small dark color="secondary" disable).d-flex.shrink {{cat.name}}
                 v-divider
-                v-card-text(v-if="news")
+                v-card-text(v-if="news" color="primary")
                     span.caption.grey--text.font-weight-medium {{getHumanDate(news.date)}}
                 v-divider
                 v-card-text(v-if="news" v-html="news.content.rendered")#page__content
-        v-flex.xs12.sm8.offset-sm2.md6.offset-md3(v-if="news")
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-if="news")
             app-comments(:post="news")
 </template>
 
@@ -60,8 +60,8 @@
                     return DEFAULT_IMG_URL
                 }
             },
-            getHumanDate(date){
-                return moment(date).locale('ru').format('LLL')
+            getHumanDate(date, format = 'LL'){
+                return moment(date).locale('ru').format(format)
             },
             getRecordCats(record_cats){
                 return record_cats.map(cat_id => this.cats.find(cat => cat.id === cat_id))

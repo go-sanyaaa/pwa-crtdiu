@@ -17,8 +17,7 @@
 </template>
 
 <script>
-    import moment from 'moment'
-    import {DEFAULT_IMG_URL} from "../common/config";
+    import post from "../components/mixins/post"
     import {GET_RECORD} from "../store/actions.type";
     import {mapGetters, mapState} from "vuex"
     import AppComments from "../components/appComments"
@@ -50,23 +49,11 @@
                         this.news = resp
                     })
             },
-            getPostImages(post){
-                if(post.better_featured_image){
-                    var images = post.better_featured_image.media_details.sizes;
-                    var max_size = Object.keys(images).pop()
-                    this.getRecordCats(post.categories)
-                    return images[max_size].source_url
-                }else{
-                    return DEFAULT_IMG_URL
-                }
-            },
-            getHumanDate(date, format = 'LL'){
-                return moment(date).locale('ru').format(format)
-            },
             getRecordCats(record_cats){
                 return record_cats.map(cat_id => this.cats.find(cat => cat.id === cat_id))
             },
-        }
+        },
+        mixins: [post],
     }
 </script>
 

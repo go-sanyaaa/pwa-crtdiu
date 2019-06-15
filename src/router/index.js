@@ -66,7 +66,43 @@ export default new Router({
         default: () => import('../views/HomeAccount'),
         toolbar: () => import('../components/Toolbars/DefaultToolbar')
       }
-    }
+    },
+    {
+      path: '/account/events',
+      name: 'my-events',
+      meta: {
+        title: 'Мои события',
+      },
+      components: {
+        default: () => import('../views/AccountEvents'),
+        toolbar: () => import('../components/Toolbars/AccountEventsToolbar')
+      },
+      props: {
+        toolbar: route => ({query: route.query['tab']})
+      }
+    },
+    {
+      path: '/info',
+      name: 'info',
+      meta: {
+        title: 'Информация',
+      },
+      components: {
+        default: () => import('../views/HomeInfo'),
+        toolbar: () => import('../components/Toolbars/DefaultToolbar')
+      }
+    },
+    {
+      path: '/info/app',
+      name: 'app-info',
+      meta: {
+        title: 'О приложении',
+      },
+      components: {
+        default: () => import('../views/InfoApp'),
+        toolbar: () => import('../components/Toolbars/DefaultBackToolbar')
+      }
+    },
   ],
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {

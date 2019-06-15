@@ -1,5 +1,5 @@
 import ApiService from '../common/api.service'
-
+import moment from "moment"
 
 import {
     GET_RECORD,
@@ -15,7 +15,7 @@ import {
 
 import {
     SET_EVENTS_CAT,
-    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE, SET_MY_EVENTS, SET_ERROR
+    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE, SET_MY_EVENTS, SET_ERROR, UPDATE_EVENTS_SUBSCRIBES, RESET_EVENTS_SUBSCRIBES
 } from "./mutations.type";
 
 const state = {
@@ -33,9 +33,9 @@ const state = {
 }
 
 const getters = {
-    eventById: state => id =>  {
-        return state.records.find(event => event.id === Number(id))
-    }
+    eventById: state => id =>  state.records.find(event => event.id === Number(id)),
+    completedEvents: state => state.records.filter(event => moment().isAfter(event.event_date_end)),
+    upcomingEvents: state => state.records.filter(event => !moment().isAfter(event.event_date_end))
 }
 
 const actions = {
@@ -103,11 +103,12 @@ const actions = {
             ApiService.get('wp/v2/users/me/events')
                 .then(resp => {
                     const {data} = resp
-                    if(data.status == false){
+                    if(data.length == 0){
                         commit(SET_MY_EVENTS,[])
-                        rej(data)
+                        rej({message: 'Вы не записаны ни на одно мероприятие'})
                     }
                     commit(SET_MY_EVENTS,data)
+                    commit(UPDATE_EVENTS_SUBSCRIBES,data.map(val => Number(val.ID)))
                     res()
                 })
         })
@@ -189,6 +190,20 @@ const mutations = {
         const {event_id} = data
         const event_i = state.records.findIndex(event => event.id === event_id)
         state.records[event_i].is_register = !state.records[event_i].is_register
+    },
+
+    [UPDATE_EVENTS_SUBSCRIBES](state,data){
+        state.records = state.records.map(event => {
+            event.is_register = data.indexOf(event.id) != -1
+            return event
+        })
+    },
+
+    [RESET_EVENTS_SUBSCRIBES](state){
+        state.records = state.records.map(event => {
+            event.is_register = false
+            return event
+        })
     },
 
     [SET_MY_EVENTS](state,data){

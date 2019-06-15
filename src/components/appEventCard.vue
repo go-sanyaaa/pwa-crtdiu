@@ -44,9 +44,8 @@
 </template>
 
 <script>
-    import moment from 'moment'
+    import post from "./mixins/post"
     import {mapState} from "vuex"
-    import {DEFAULT_IMG_URL} from "../common/config";
     import AppEventSubscribe from "./appEventSubscribe";
     export default {
         name: "appEventCard",
@@ -64,29 +63,13 @@
             ...mapState('auth',['isAuthenticated']),
         },
         methods: {
-            getPostImages(post){
-                if(post.better_featured_image){
-                    var images = post.better_featured_image.media_details.sizes;
-                    var max_size = Object.keys(images).pop()
-                    return images[max_size].source_url
-                }else{
-                    return DEFAULT_IMG_URL
-                }
-            },
-            getHumanDate(date,format = "LLL"){
-                return moment(date).locale('ru').format(format)
-            },
             getEventCats(cat_array){
                 const event_cats = [...cat_array]
                 return this.categories.filter(category => event_cats.some((cat_id,i) => category.id == cat_id && delete event_cats[i]))
             },
-            shareEvent(event){
-                navigator.share({
-                    title: "Центр развития творчества детей и юношества Кировского района города Кемерово",
-                    url: event.link
-                })
-            },
-        }
+
+        },
+        mixins: [post]
     }
 </script>
 

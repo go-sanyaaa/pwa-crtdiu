@@ -25,9 +25,9 @@
                                 | {{user.name}}
                             v-list-tile-sub-title.body-1.grey--text.text--darken-1 {{role}}
                     v-divider(inset)
-                    v-list-tile(ripple color="primary")
-                        v-list-tile-action
-                            v-icon(outlined) alternate_email
+                    v-list-tile(ripple color="primary" avatar)
+                        v-list-tile-avatar
+                            v-icon.blue.white--text.lighten-2 alternate_email
                         v-list-tile-content
                             template
                                 v-list-tile-title.body-2.grey--text.text--darken-2 {{user.email}}
@@ -43,37 +43,23 @@
                                     v-progress-linear(indeterminate rounded color="secondary" height="6").inner-progress
                             template(v-else)
                                 template(v-if="eventsError")
-                                    v-flex.xs12.px-0
+                                    v-flex.xs12
                                         v-alert(:value="true" icon="new_releases" type="info").custom-alert Вы не записаны ни на одно мероприятие
                                 template(v-else)
-                                    v-flex.xs12.px-0(v-for="event in lastActiveEvents.slice(0,3)" :key="`my-event-${event.ID}`")
-                                        router-link.event-link(:to="`/events/${event.ID}`")
-                                            v-card.elevation-0(
-                                                max-height="280px" dark color="grey darken-2"
-                                                img="https://crtdiu-app.ru/wp-content/uploads/2019/02/IMG_8931-02-02-19-10-25-2-1024x870.jpg"
-                                                :style="{borderRadius: '12px'}"
-                                            )
-                                                v-container.fill-height.fluid.bottom-gradient
-                                                    v-layout.row.wrap(align-center)
-                                                        v-flex.xs12
-                                                            span.title.font-weight-medium(v-html="event.post_title")
-                                                        v-flex.shrink.pt-0
-                                                            v-chip(dark small label color="secondary").ml-0.font-weight-medium.mr-3
-                                                                | 14 мая 2019
-                                                            v-chip(dark small color="success").green.ml-0.font-weight-medium
-                                                                v-avatar(:size="`14px`").mr-2.pl-3
-                                                                    v-icon(small) access_time
-                                                                | 14:00 - 12:00
+                                    v-flex.xs12(v-for="event in lastActiveEvents.slice(0,3)" :key="`my-event-${event.ID}`")
+                                        router-link(:to="`/events/${event.ID}`").custom-link
+                                            app-event-list-card(:event="event")
                                 v-flex.xs12.py-0.text-xs-center(v-if="!eventsError")
-                                    v-btn(flat small).caption Все мои события
+                                    v-btn(flat small :to="{name:'my-events'}").caption Все мои события
                 v-divider
-                v-list(subheader)
+                v-list(subheader two-line)
                     v-subheader Действия
-                    v-list-tile(@click.stop="openEditDialog" ripple)
-                        v-list-tile-action
-                            v-icon edit
+                    v-list-tile(@click.stop="openEditDialog" v-ripple="{class:'orange--text'}" avatar)
+                        v-list-tile-avatar
+                            v-icon.orange.white--text edit
                         v-list-tile-content
-                            v-list-tile-title Редактировать профиль
+                            v-list-tile-title.body-2 Редактировать профиль
+                            v-list-tile-sub-title.caption Изменить данные пользователя
                     v-dialog(v-model="editDialog" max-width="480px")
                         v-card
                             v-toolbar(flat)
@@ -88,11 +74,12 @@
                                 v-spacer
                                 v-btn(color="primary" :loading="userEditing" depressed @click="edit") Редактировать
                     v-divider
-                    v-list-tile(@click.stop="exitDialog = true" ripple)
-                        v-list-tile-action
-                            v-icon exit_to_app
+                    v-list-tile(@click.stop="exitDialog = true" v-ripple="{class:'red--text'}"  avater)
+                        v-list-tile-avatar
+                            v-icon.red.white--text exit_to_app
                         v-list-tile-content
-                            v-list-tile-title Выйти
+                            v-list-tile-title.body-2 Выйти
+                            v-list-tile-sub-title.caption Выйти из учетной записи?
                     v-dialog(v-model="exitDialog" max-width="400px")
                         v-card
                             v-toolbar(flat)
@@ -106,13 +93,16 @@
 </template>
 
 <script>
-    import moment from "moment"
     import {mapState} from 'vuex'
-    import {AUTH_LOGOUT, AUTH_LOGIN, MODIFY_USER, FETCH_MY_EVENTS} from "../store/actions.type";
+    import {AUTH_LOGOUT, AUTH_LOGIN, MODIFY_USER} from "../store/actions.type";
+    import {RESET_EVENTS_SUBSCRIBES} from "../store/mutations.type";
     import AppRegistration from "../components/appRegistration";
+    import AppEventListCard from "../components/appEventListCard"
+    import {loadMyEvents} from "../components/mixins/events";
+
     export default {
         name: 'HomeAccount',
-        components: {AppRegistration},
+        components: {AppEventListCard, AppRegistration},
         data(){
             return {
                 dialog: '',
@@ -122,13 +112,8 @@
                 password: '',
                 exitDialog: false,
                 editDialog: false,
-                userEditing: false,
-                myEventsLoading: true,
-                eventsError: false
+                userEditing: false
             }
-        },
-        created(){
-            this.getMyEvents()
         },
         computed: {
             ...mapState('auth',['user','isAuthenticated']),
@@ -142,16 +127,16 @@
         },
         methods: {
             logout(){
-                this.$store.dispatch(`auth/${AUTH_LOGOUT}`)
+                this.$store.dispatch(`auth/${AUTH_LOGOUT}`).then(()=>{
+                    this.$store.commit(`events/${RESET_EVENTS_SUBSCRIBES}`)
+                    this.exitDialog = false
+                })
             },
             auth() {
                 const {email, password} = this
-                this.$store.dispatch(`auth/${AUTH_LOGIN}`, {username: email, password})
-                    .then(resp => {
-                        this.$router.push('/')
-                    })
-                    .catch(err => {
-                    })
+                this.$store.dispatch(`auth/${AUTH_LOGIN}`, {username: email, password}).then(() => {
+                    this.getMyEvents()
+                })
             },
             openEditDialog(){
                 this.editDialog = true;
@@ -167,29 +152,10 @@
                         this.editDialog = false
                     })
             },
-            getMyEvents(){
-                this.$store.dispatch(`events/${FETCH_MY_EVENTS}`)
-                    .then(resp => {
-                        this.myEventsLoading = false
-                        this.eventsError = false
-                    })
-                    .catch(err => {
-                        this.myEventsLoading = false
-                        this.eventsError = err
-                    })
-            },
-            getHumanDate(date,format = "LLL"){
-                return moment(date).locale('ru').format(format)
-            },
-        }
+        },
+        mixins: [loadMyEvents]
     }
 </script>
 
 <style lang="scss">
-    .event-link{
-        text-decoration: none;
-    }
-    .bottom-gradient {
-        background-image: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100px);
-    }
 </style>

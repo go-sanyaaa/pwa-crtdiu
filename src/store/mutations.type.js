@@ -13,6 +13,8 @@ export const LOAD_END = 'loadEnd'
 export const SET_EVENTS = 'setEvents'
 export const SET_MY_EVENTS = 'setMyEvents'
 export const UPDATE_EVENT_SUBSCRIBE = 'updateEventSubscribe'
+export const UPDATE_EVENTS_SUBSCRIBES = 'updateEventsSubscribes'
+export const RESET_EVENTS_SUBSCRIBES = 'resetEventsSubscribes'
 export const SET_EVENTS_CAT = 'setEventsCat'
 
 export const SET_FILTERS = 'setFilters'

@@ -8,10 +8,10 @@
         v-divider
         v-card-text
             v-layout(row wrap)
-                v-flex.xs12.px-0.pt-0
+                v-flex.xs12.pt-0
                     template(v-if="isAuthenticated")
                         app-comments-dialog(v-slot="data" @send="commentSended" :post="post")
-                            v-btn(block depressed large color="secondary" @click="data.open" :ripple="{ center: true }").pa-0.mx-0.mt-2.custom-rounded
+                            v-btn(block depressed large outline color="secondary" @click="data.open" :ripple="{ center: true }").pa-0.mx-0.mt-2
                                 v-icon(left) add_comment
                                 | Добавить комментарий
                     template(v-else)

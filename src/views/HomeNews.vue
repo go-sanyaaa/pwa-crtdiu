@@ -29,10 +29,9 @@
 </template>
 
 <script>
+    import post from "../components/mixins/post"
     import {mapState} from 'vuex'
-    import {LOAD_NEWS, CHANGE_PAGE, INIT_RECORDS} from "../store/actions.type";
-    import {DEFAULT_IMG_URL} from "../common/config";
-    import moment from 'moment'
+    import {CHANGE_PAGE, INIT_RECORDS} from "../store/actions.type"
 
     export default {
         name: "HomeNews",
@@ -55,18 +54,6 @@
             if(this.newsEmpty) this.loadNews({})
         },
         methods: {
-            getHumanDate(date){
-                return moment(date).locale('ru').format('LLL')
-            },
-            getPostImages(post){
-                if(post.better_featured_image){
-                    var images = post.better_featured_image.media_details.sizes;
-                    var max_size = Object.keys(images).pop()
-                    return images[max_size].source_url
-                }else{
-                    return DEFAULT_IMG_URL
-                }
-            },
             loadNews(){
                 this.$store.dispatch(`news/${INIT_RECORDS}`)
             },
@@ -82,7 +69,8 @@
             getRecordCats(record_cats){
                 return record_cats.map(cat_id => this.categories.find(cat => cat.id === cat_id))
             },
-        }
+        },
+        mixins: [post],
     }
 </script>
 

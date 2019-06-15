@@ -2,11 +2,6 @@
     v-layout.row.wrap.ma-0#scroll-target
         v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-if="event")
             v-card(flat).custom-elevation
-                v-card-text.py-0(:style="{background:'#03a9f4'}")
-                    v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0.text-xs-center.py-1
-                        v-chip(color="secondary" dark)
-                            v-icon.mr-2 calendar_today
-                            span.title.font-weight-bold {{getHumanDate(event.date)}}
                 v-img(:src="getPostImages(event)"  height="200px")
                     v-container.fill-height.pa-3
                         v-layout.row.fill-height.ma-0
@@ -14,23 +9,37 @@
                                 v-layout.row.wrap.ma-0
                                     template(v-for='cat in getRecordCats(event.event_cat)')
                                         v-chip(small dark color="secondary" disable).d-flex.shrink {{cat.name}}
+                v-list(three-line).py-0
+                    v-list-tile(ripple avatar)
+                        v-list-tile-avatar
+                            v-icon(outlined).red.lighten-1.white--text calendar_today
+                        v-list-tile-content
+                            v-list-tile-title.body-2.grey--text.text--darken-2.font-weight-bold {{getHumanDate(event.event_date)}}
+                            v-list-tile-sub-title
+                                v-chip(small color="success" dark).ml-0.font-weight-medium
+                                    v-avatar.mr-2.pl-3(size="12")
+                                        v-icon access_time
+                                    | {{getHumanDate(event.event_date,"LT")}} - {{getHumanDate(event.event_date_end,"LT")}}
+                                v-tooltip(bottom)
+                                    template(v-slot:activator="{on}")
+                                        v-chip(v-on="on" color="#FFF" text-color="grey" disabled).font-weight-bold.mx-0
+                                            v-icon people
+                                            span.ml-1 {{event.persons}}
+                                    span Количество участников
                 v-divider
-                v-card-actions.py-1.px-3
-                    v-chip(dark color="success" disabled text-color="white").ml-0.font-weight-medium
-                        v-avatar.mr-2.pl-3
-                            v-icon access_time
-                        | {{getHumanDate(event.event_date,"LT")}} - {{getHumanDate(event.event_date_end,"LT")}}
-                    v-tooltip(bottom)
-                        template(v-slot:activator="{on}")
-                            v-chip(v-on="on" color="#FFF" text-color="grey" disabled).font-weight-bold.mx-0
-                                v-icon people
-                                span.ml-1 {{event.persons}}
-                        span Количество участников
-                    v-spacer
-                    app-event-subscribe(v-slot="{open}" :event="event")
-                        v-btn(icon text @click="open").ma-0.grey--text
-                            v-icon(v-if="!event.is_register") person_add
-                            v-icon(v-else color="green") check_circle_outline
+                v-list(two-line).py-0
+                    app-event-subscribe(v-slot="{open}" :event="event").d-block
+                        v-list-tile(icon text @click="open" avatar :class="{blue:!event.is_register}" v-ripple="{class: !event.is_register ? 'blue--text' : ''}").ma-0.lighten-5
+                            v-list-tile-avatar
+                                v-icon(v-if="!event.is_register").blue.lighten-1.white--text person_add
+                                v-icon(v-else).green.white--text.lighten-2 check_circle_outline
+                            v-list-tile-content
+                                template(v-if="!event.is_register")
+                                    v-list-tile-title.body-2.grey--text.text--darken-2 Принять участие
+                                    v-list-tile-sub-title.caption.grey--text Записаться на мероприятие
+                                template(v-else)
+                                    v-list-tile-title.body-2.grey--text.text--darken-2 Вы учавствуете
+                                    v-list-tile-sub-title.caption.grey--text.text--lighten-1 Отменить запись?
                 v-divider
                 v-card-text( v-html="event.content.rendered")#page__content
         v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-if="event")
@@ -38,8 +47,7 @@
 </template>
 
 <script>
-    import moment from 'moment'
-    import {DEFAULT_IMG_URL} from "../common/config";
+    import post from "../components/mixins/post"
     import {GET_RECORD} from "../store/actions.type";
     import {mapGetters, mapState} from "vuex"
     import AppComments from "../components/appComments"
@@ -70,23 +78,11 @@
                         this.event = resp
                     })
             },
-            getPostImages(post){
-                if(post.better_featured_image){
-                    var images = post.better_featured_image.media_details.sizes;
-                    var max_size = Object.keys(images).pop()
-                    this.getRecordCats(post.categories)
-                    return images[max_size].source_url
-                }else{
-                    return DEFAULT_IMG_URL
-                }
-            },
-            getHumanDate(date,format = 'LL'){
-                return moment(date).locale('ru').format(format)
-            },
             getRecordCats(record_cats = []){
                 return record_cats.map(cat_id => this.categories.find(cat => cat.id === cat_id))
             },
-        }
+        },
+        mixins: [post],
     }
 </script>
 

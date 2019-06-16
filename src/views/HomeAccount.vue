@@ -32,28 +32,19 @@
                             template
                                 v-list-tile-title.body-2.grey--text.text--darken-2 {{user.email}}
                                 v-list-tile-sub-title.caption.grey--text.text--lighten-1 Почтовый адрес
+                    v-divider(inset)
+                    v-list-tile(:to="{name:'my-events'}" v-ripple="{class:'blue--text'}" avatar)
+                        v-list-tile-avatar
+                            v-icon.blue.white--text event
+                        v-list-tile-content
+                            v-list-tile-title.body-2 Мои события
+                            v-list-tile-sub-title.caption Список ваших событий
                 v-divider
-                v-list(subheader)
-                    v-subheader(v-if="!myEventsLoading") Ближайшие события с вашим участием:
-                    v-container.fluid.pb-2(:class="{'pt-1':!myEventsLoading}")
-                        v-layout.row.wrap
-                            template(v-if="myEventsLoading")
-                                v-flex.text-xs-center.xs12.pb-0.caption.grey--text Загрузка ваших событий...
-                                v-flex.text-xs-center.xs8.offset-xs2
-                                    v-progress-linear(indeterminate rounded color="secondary" height="6").inner-progress
-                            template(v-else)
-                                template(v-if="eventsError")
-                                    v-flex.xs12
-                                        v-alert(:value="true" icon="new_releases" type="info").custom-alert Вы не записаны ни на одно мероприятие
-                                template(v-else)
-                                    v-flex.xs12(v-for="event in lastActiveEvents.slice(0,3)" :key="`my-event-${event.ID}`")
-                                        router-link(:to="`/events/${event.ID}`").custom-link
-                                            app-event-list-card(:event="event")
-                                v-flex.xs12.py-0.text-xs-center(v-if="!eventsError")
-                                    v-btn(flat small :to="{name:'my-events'}").caption Все мои события
-                v-divider
+        v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0
+            v-card.elevation-0.custom-card
                 v-list(subheader two-line)
                     v-subheader Действия
+                    v-divider
                     v-list-tile(@click.stop="openEditDialog" v-ripple="{class:'orange--text'}" avatar)
                         v-list-tile-avatar
                             v-icon.orange.white--text edit
@@ -73,7 +64,7 @@
                                 v-btn(flat @click="editDialog = false") Отменить
                                 v-spacer
                                 v-btn(color="primary" :loading="userEditing" depressed @click="edit") Редактировать
-                    v-divider
+                    v-divider(inset)
                     v-list-tile(@click.stop="exitDialog = true" v-ripple="{class:'red--text'}"  avater)
                         v-list-tile-avatar
                             v-icon.red.white--text exit_to_app
@@ -117,13 +108,9 @@
         },
         computed: {
             ...mapState('auth',['user','isAuthenticated']),
-            ...mapState('events',['myEvents']),
             role(){
                 return this.user.role == 'administrator' ? 'Администратор' : 'Подписчик'
             },
-            lastActiveEvents(){
-                return this.myEvents.filter(event => true)
-            }
         },
         methods: {
             logout(){

@@ -62,11 +62,12 @@
                 const parent = Object.keys(this.comment).length > 0 ? this.comment.id : 0
                 ApiService.post('wp/v2/comments',{post,parent,content})
                     .then(resp => {
+                        console.log(resp)
                         this.isSending = false
                         this.error = false
                         this.content = ''
                         this.dialog = false
-                        this.$emit('send')
+                        this.$emit('send',resp.data.status)
                     })
                     .catch(err => {
                         this.isSending = false

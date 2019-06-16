@@ -1,3 +1,4 @@
+import moment from "moment"
 import {mapState} from "vuex";
 import {FETCH_MY_EVENTS} from "../../store/actions.type";
 
@@ -7,8 +8,7 @@ export const loadMyEvents = {
     },
     data(){
         return {
-            myEventsLoading: true,
-            eventsError: false
+            myEventsLoading: true
         }
     },
     computed: {
@@ -19,12 +19,18 @@ export const loadMyEvents = {
             this.$store.dispatch(`events/${FETCH_MY_EVENTS}`)
                 .then(resp => {
                     this.myEventsLoading = false
-                    this.eventsError = false
                 })
                 .catch(err => {
                     this.myEventsLoading = false
-                    this.eventsError = err
                 })
         },
+    }
+}
+
+export const checkEvent = {
+    computed: {
+        completed(){
+            return moment().isAfter(this.event.event_date_end)
+        }
     }
 }

@@ -15,7 +15,7 @@ import {
 
 import {
     SET_EVENTS_CAT,
-    UPDATE_EVENT_SUBSCRIBE, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE, SET_MY_EVENTS, SET_ERROR, UPDATE_EVENTS_SUBSCRIBES, RESET_EVENTS_SUBSCRIBES
+    UPDATE_EVENT, LOAD_START, LOAD_END, FETCH_END, FETCH_START, SET_FILTERS, SET_PAGE, SET_MY_EVENTS, SET_ERROR, UPDATE_EVENTS_SUBSCRIBES, RESET_EVENTS_SUBSCRIBES
 } from "./mutations.type";
 
 const state = {
@@ -34,8 +34,8 @@ const state = {
 
 const getters = {
     eventById: state => id =>  state.records.find(event => event.id === Number(id)),
-    completedEvents: state => state.records.filter(event => moment().isAfter(event.event_date_end)),
-    upcomingEvents: state => state.records.filter(event => !moment().isAfter(event.event_date_end))
+    completedEvents: state => state.myEvents.filter(event => moment().isAfter(event.event_date_end)),
+    upcomingEvents: state => state.myEvents.filter(event => !moment().isAfter(event.event_date_end))
 }
 
 const actions = {
@@ -106,10 +106,16 @@ const actions = {
                     if(data.length == 0){
                         commit(SET_MY_EVENTS,[])
                         rej({message: 'Вы не записаны ни на одно мероприятие'})
+                    }else{
+                        const myEvents = data.map(event => Number(event.ID))
+                        ApiService.get('wp/v2/events',{include: myEvents,per_page:100})
+                            .then(resp => {
+                                const {data} = resp
+                                commit(SET_MY_EVENTS,data)
+                                commit(UPDATE_EVENTS_SUBSCRIBES,myEvents)
+                                res()
+                            })
                     }
-                    commit(SET_MY_EVENTS,data)
-                    commit(UPDATE_EVENTS_SUBSCRIBES,data.map(val => Number(val.ID)))
-                    res()
                 })
         })
     },
@@ -134,11 +140,11 @@ const actions = {
     [SUBSCRIBE_ON_EVENT](context,event_id){
         return new Promise((res,rej) => {
             ApiService.post(`wp/v2/events/${event_id}`)
-                .then(resp => {
-                    const {data} = resp
-                    if(data.status){
-                        context.commit(UPDATE_EVENT_SUBSCRIBE,{event_id})
-                    }
+                .then(({data}) => {
+                    return ApiService.get(`wp/v2/events/${event_id}`)
+                })
+                .then(({data}) => {
+                    context.commit(UPDATE_EVENT,data)
                     res(data)
                 })
         })
@@ -146,11 +152,11 @@ const actions = {
     [UNSUBSCRIBE_ON_EVENT](context,event_id){
         return new Promise((res,rej) => {
             ApiService.delete(`wp/v2/events/${event_id}`)
-                .then(resp => {
-                    const {data} = resp
-                    if(data.status){
-                        context.commit(UPDATE_EVENT_SUBSCRIBE,{event_id})
-                    }
+                .then(({data}) => {
+                    return ApiService.get(`wp/v2/events/${event_id}`)
+                })
+                .then(({data}) => {
+                    context.commit(UPDATE_EVENT,data)
                     res(data)
                 })
         })
@@ -186,10 +192,13 @@ const mutations = {
         state.pagination.page = data
     },
 
-    [UPDATE_EVENT_SUBSCRIBE](state,data){
-        const {event_id} = data
-        const event_i = state.records.findIndex(event => event.id === event_id)
-        state.records[event_i].is_register = !state.records[event_i].is_register
+    [UPDATE_EVENT](state,data){
+        const {id} = data
+        const event_i = state.records.findIndex(event => event.id === id)
+        if(event_i != -1){
+            state.records[event_i].is_register = data.is_register
+            state.records[event_i].place_free = data.place_free
+        }
     },
 
     [UPDATE_EVENTS_SUBSCRIBES](state,data){

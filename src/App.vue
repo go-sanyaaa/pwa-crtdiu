@@ -45,7 +45,7 @@ export default {
                 {icon: 'web_asset', route: '/', title: 'Новости', badge: 0},
                 {icon: 'event', route: '/events', title: 'События', badge: 0},
                 {icon: 'account_circle', route: '/account', title: 'Аккаунт', badge: 0},
-                {icon: 'info', route: '/info', title: 'Информация', badge: 0}
+                {icon: 'more_horiz', route: '/info', title: 'Еще', badge: 0}
             ]
         }
     },
@@ -126,7 +126,7 @@ export default {
         border-radius: 12px !important;
     }
     .bottom-gradient {
-         background-image: linear-gradient(to top, rgba(29, 116, 222, 0.8) 0%, transparent 100px)
+        background-image: linear-gradient(to top, rgba(0, 0, 0, 0.5) 100%, transparent 100px);
      }
 
     .custom-link{

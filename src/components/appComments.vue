@@ -1,7 +1,7 @@
 <template lang="pug">
     v-card(flat).custom-elevation
-        v-snackbar(v-model="snackbar" :timeout="3000" :multi-line="$vuetify.breakpoint.smAndDown" color="success" :top="true").mt-2
-            | Комментарий успешно добавлен
+        v-snackbar(v-model="snackbar" :timeout="3000" :multi-line="$vuetify.breakpoint.smAndDown" color="success" :top="true")
+            | {{snackbarMessage}}
             v-btn(flat @click="snackbar = false") ОК
         v-toolbar(flat)
             v-toolbar-title.font-weight-light Комментарии
@@ -66,6 +66,7 @@
         },
         data(){
             return {
+                snackbarMessage: 'Комментарий успешно добавлен',
                 comments: [],
                 snackbar: false
             }
@@ -109,7 +110,12 @@
             getHumanDate(date){
                 return moment(date).locale('ru').format('LLL')
             },
-            commentSended(){
+            commentSended(status){
+                if(status == 'approved') {
+                    this.snackbarMessage = 'Комментарий успешно добавлен'
+                }else{
+                    this.snackbarMessage = 'Комментарий отправлен на рассмотрение'
+                }
                 this.snackbar = true
                 this.loadComments()
             }

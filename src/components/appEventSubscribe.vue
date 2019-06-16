@@ -1,5 +1,5 @@
 <template lang="pug">
-    div(:style="{display: 'inline-block'}")
+    div(:style="{display: 'inline-block'}" v-show="!completed")
         slot(:open="openDialog"  v-on="on")
         v-snackbar(v-model="snackbar" :timeout="3000" :multi-line="$vuetify.breakpoint.smAndDown" :color="color" :top="true")
             | {{text}}
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+    import {checkEvent} from "./mixins/events";
     import {SUBSCRIBE_ON_EVENT,UNSUBSCRIBE_ON_EVENT} from "../store/actions.type";
     import moment from "moment"
     import {mapState} from "vuex"
@@ -76,15 +77,12 @@
                 this.loading = true;
                 const {id} = this.event;
                 this.$store.dispatch(`events/${SUBSCRIBE_ON_EVENT}`,id)
-                    .then(resp => {
-                        console.log(resp)
+                    .then((data) => {
                         this.loading = false
                         this.color = 'success'
                         this.text = 'Вы успешно записаны на мероприятие'
                         this.snackbar = true
-                    })
-                    .catch(err => {
-                        console.log('Event catch')
+                        this.$emit('updated',data)
                     })
             },
             unSubscribe(){
@@ -92,13 +90,15 @@
                 this.loading = true;
                 const {id} = this.event;
                 this.$store.dispatch(`events/${UNSUBSCRIBE_ON_EVENT}`,id)
-                    .then(resp => {
+                    .then((data) => {
                         this.color = 'error'
                         this.text = 'Запись на мероприятие отменена'
                         this.snackbar = true
+                        this.$emit('updated',data)
                     })
             }
-        }
+        },
+        mixins: [checkEvent]
     }
 </script>
 

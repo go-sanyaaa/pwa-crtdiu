@@ -14,17 +14,19 @@
                                 v-flex.py-0
                                     strong.display-2.font-weight-regular.font-weight-black {{getHumanDate(event.event_date,"DD")}}
                         v-flex.column.justify-center.pt-1
-                            v-chip(dark).green.ml-0.font-weight-medium.mr-2
+                            v-chip(dark :class="{'green': !completed}").ml-0.font-weight-medium.mr-2
                                 v-avatar.mr-2.pl-3
                                     v-icon access_time
                                 | {{getHumanDate(event.event_date,"LT")}} - {{getHumanDate(event.event_date_end,"LT")}}
-                            v-tooltip(bottom)
+                            v-tooltip(bottom v-if="!completed")
                                 template(v-slot:activator="{on}")
                                     v-chip(v-on="on" color="#FFF" outline dark).font-weight-medium
                                         v-avatar.mr-2.pl-3
                                             v-icon people
-                                        | {{event.persons}}
-                                span Количество участников
+                                        | {{event.persons}} ({{event.place_free}})
+                                span Количество участников: всего (свободно)
+                            v-chip(dark v-if="completed").error.font-weight-medium
+                                | Завершено
         v-card-title(primary-title)
             v-layout.row(justify-space-between align-start)
                 v-flex
@@ -45,8 +47,10 @@
 
 <script>
     import post from "./mixins/post"
+    import {checkEvent} from "./mixins/events";
     import {mapState} from "vuex"
     import AppEventSubscribe from "./appEventSubscribe";
+
     export default {
         name: "appEventCard",
         components: {AppEventSubscribe},
@@ -69,7 +73,7 @@
             },
 
         },
-        mixins: [post]
+        mixins: [post, checkEvent]
     }
 </script>
 

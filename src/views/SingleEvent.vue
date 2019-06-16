@@ -10,37 +10,38 @@
                                     template(v-for='cat in getRecordCats(event.event_cat)')
                                         v-chip(small dark color="secondary" disable).d-flex.shrink {{cat.name}}
                 v-list(three-line).py-0
-                    v-list-tile(ripple avatar)
-                        v-list-tile-avatar
-                            v-icon(outlined).red.lighten-1.white--text calendar_today
+                    v-list-tile(ripple)
                         v-list-tile-content
-                            v-list-tile-title.body-2.grey--text.text--darken-2.font-weight-bold {{getHumanDate(event.event_date)}}
+                            v-list-tile-title.body-2.grey--text.text--darken-2.font-weight-bold {{getHumanDate(event.event_date,"LL")}}
                             v-list-tile-sub-title
-                                v-chip(small color="success" dark).ml-0.font-weight-medium
+                                v-chip(:class="{'success': !completed}" dark).ml-0.font-weight-medium
                                     v-avatar.mr-2.pl-3(size="12")
                                         v-icon access_time
                                     | {{getHumanDate(event.event_date,"LT")}} - {{getHumanDate(event.event_date_end,"LT")}}
-                                v-tooltip(bottom)
+                                v-tooltip(bottom v-if="!completed")
                                     template(v-slot:activator="{on}")
                                         v-chip(v-on="on" color="#FFF" text-color="grey" disabled).font-weight-bold.mx-0
                                             v-icon people
-                                            span.ml-1 {{event.persons}}
-                                    span Количество участников
+                                            span.ml-1 {{event.persons}} ({{event.place_free}})
+                                    span.text-xs-center Количество участников: всего (свободно)
+                                v-chip(dark v-if="completed").error.font-weight-medium
+                                    | Завершено
                 v-divider
-                v-list(two-line).py-0
-                    app-event-subscribe(v-slot="{open}" :event="event").d-block
-                        v-list-tile(icon text @click="open" avatar :class="{blue:!event.is_register}" v-ripple="{class: !event.is_register ? 'blue--text' : ''}").ma-0.lighten-5
-                            v-list-tile-avatar
-                                v-icon(v-if="!event.is_register").blue.lighten-1.white--text person_add
-                                v-icon(v-else).green.white--text.lighten-2 check_circle_outline
-                            v-list-tile-content
-                                template(v-if="!event.is_register")
-                                    v-list-tile-title.body-2.grey--text.text--darken-2 Принять участие
-                                    v-list-tile-sub-title.caption.grey--text Записаться на мероприятие
-                                template(v-else)
-                                    v-list-tile-title.body-2.grey--text.text--darken-2 Вы учавствуете
-                                    v-list-tile-sub-title.caption.grey--text.text--lighten-1 Отменить запись?
-                v-divider
+                template(v-if="!completed")
+                    v-list(two-line).py-0
+                        app-event-subscribe(v-slot="{open}" @updated="update" :event="event").d-block
+                            v-list-tile(icon text @click="open" avatar :class="{blue:!event.is_register}" v-ripple="{class: !event.is_register ? 'blue--text' : ''}").ma-0.lighten-5
+                                v-list-tile-avatar
+                                    v-icon(v-if="!event.is_register").blue.lighten-1.white--text person_add
+                                    v-icon(v-else).green.white--text.lighten-2 check_circle_outline
+                                v-list-tile-content
+                                    template(v-if="!event.is_register")
+                                        v-list-tile-title.body-2.grey--text.text--darken-2 Принять участие
+                                        v-list-tile-sub-title.caption.grey--text Записаться на мероприятие
+                                    template(v-else)
+                                        v-list-tile-title.body-2.grey--text.text--darken-2 Вы учавствуете
+                                        v-list-tile-sub-title.caption.grey--text.text--lighten-1 Отменить запись?
+                    v-divider
                 v-card-text( v-html="event.content.rendered")#page__content
         v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0(v-if="event")
             app-comments(:post="event")
@@ -48,6 +49,7 @@
 
 <script>
     import post from "../components/mixins/post"
+    import {checkEvent} from "../components/mixins/events";
     import {GET_RECORD} from "../store/actions.type";
     import {mapGetters, mapState} from "vuex"
     import AppComments from "../components/appComments"
@@ -60,6 +62,7 @@
             return {
                 event: false,
                 errors: [],
+                isSingle: false
             }
         },
         name: "singleEvent",
@@ -73,6 +76,7 @@
         },
         methods: {
             loadSingleEvent(id){
+                this.isSingle = true
                 this.$store.dispatch(`events/${GET_RECORD}`,{id})
                     .then(resp => {
                         this.event = resp
@@ -81,8 +85,14 @@
             getRecordCats(record_cats = []){
                 return record_cats.map(cat_id => this.categories.find(cat => cat.id === cat_id))
             },
+            update(data){
+                if(this.isSingle){
+                    this.event.is_register = data.is_register
+                    this.event.place_free = data.place_free
+                }
+            }
         },
-        mixins: [post],
+        mixins: [post, checkEvent],
     }
 </script>
 

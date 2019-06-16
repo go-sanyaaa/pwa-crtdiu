@@ -9,7 +9,7 @@
             v-tabs(v-model="tabs" grow color="#FFF")
                 v-tabs-slider(color="secondary")
                 v-tab(:key="1") Все
-                v-tab(:key="2") Будущие
+                v-tab(:key="2") Предстоящие
                 v-tab(:key="3") Завершенные
 </template>
 

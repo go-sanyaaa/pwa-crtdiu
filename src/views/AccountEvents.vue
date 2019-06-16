@@ -2,19 +2,37 @@
         v-tabs-items(v-model="tabs")
             v-tab-item(:key="1")
                 v-layout.row.wrap.ma-0
-                    v-flex(
-                        v-for="event in allEvents" :key="`all-events-${event.id}`"
-                    ).xs12.sm8.offset-sm2.md6.offset-md3.px-0.fill-height
-                        router-link(:to="`/events/${event.ID}`").custom-link
-                            app-event-list-card(:event="event" :style="{borderRadius: '0px'}")
+                    template(v-if="allEvents.length > 0")
+                        v-flex(
+                            v-for="event in allEvents" :key="`all-events-${event.id}`"
+                        ).xs12.sm8.offset-sm2.md6.offset-md3.px-0.fill-height
+                            router-link(:to="`/events/${event.id}`").custom-link
+                                app-event-list-card(:event="event" :style="{borderRadius: '0px'}")
+                    template(v-else)
+                        v-flex.xs12.sm8.offset-sm2.md6.offset-md3
+                            v-alert(:value="true" icon="new_releases" type="info").custom-alert Вы не записаны ни на одно событие :(
             v-tab-item(:key="2")
-                v-card(flat).custom-elevation
-                    v-card-text
-                        h2 Tab {{activeTab}}
+                v-layout.row.wrap.ma-0
+                    template(v-if="upcomingEvents.length > 0")
+                        v-flex(
+                            v-for="event in upcomingEvents" :key="`all-events-${event.id}`"
+                        ).xs12.sm8.offset-sm2.md6.offset-md3.px-0.fill-height
+                            router-link(:to="`/events/${event.id}`").custom-link
+                                app-event-list-card(:event="event" :style="{borderRadius: '0px'}")
+                    template(v-else)
+                        v-flex.xs12.sm8.offset-sm2.md6.offset-md3
+                            v-alert(:value="true" icon="new_releases" type="info").custom-alert У вас нет предстоящих событий :(
             v-tab-item(:key="3")
-                v-card(flat).custom-elevation
-                    v-card-text
-                        h2 Tab {{activeTab}}
+                v-layout.row.wrap.ma-0
+                    template(v-if="completedEvents.length > 0")
+                        v-flex(
+                            v-for="event in completedEvents" :key="`all-events-${event.id}`"
+                        ).xs12.sm8.offset-sm2.md6.offset-md3.px-0.fill-height
+                            router-link(:to="`/events/${event.id}`").custom-link
+                                app-event-list-card(:event="event" :style="{borderRadius: '0px'}")
+                    template(v-else)
+                        v-flex.xs12.sm8.offset-sm2.md6.offset-md3
+                            v-alert(:value="true" icon="new_releases" type="info").custom-alert Нет завершенных событий
 </template>
 
 <script>

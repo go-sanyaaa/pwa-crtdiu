@@ -39,7 +39,7 @@
                                         v-list-tile-title.body-2.grey--text.text--darken-2 Принять участие
                                         v-list-tile-sub-title.caption.grey--text Записаться на мероприятие
                                     template(v-else)
-                                        v-list-tile-title.body-2.grey--text.text--darken-2 Вы учавствуете
+                                        v-list-tile-title.body-2.grey--text.text--darken-2 Вы участвуете
                                         v-list-tile-sub-title.caption.grey--text.text--lighten-1 Отменить запись?
                     v-divider
                 v-card-text( v-html="event.content.rendered")#page__content
@@ -52,8 +52,8 @@
     import {checkEvent} from "../components/mixins/events";
     import {GET_RECORD} from "../store/actions.type";
     import {mapGetters, mapState} from "vuex"
-    import AppComments from "../components/appComments"
-    import AppEventSubscribe from "../components/appEventSubscribe";
+    const AppComments = () => import("../components/appComments")
+    const AppEventSubscribe = () => import("../components/appEventSubscribe")
 
     export default {
         components: {AppEventSubscribe, AppComments},

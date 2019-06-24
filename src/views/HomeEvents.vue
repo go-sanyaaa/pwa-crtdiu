@@ -14,7 +14,7 @@
 <script>
     import {mapState} from 'vuex'
     import {FETCH_EVENTS, INIT_RECORDS, LOAD_EVENTS} from "../store/actions.type";
-    import appEventCard from "../components/appEventCard"
+    const AppEventCard = () => import("../components/appEventCard")
 
     export default {
         name: "HomeEvents",
@@ -53,7 +53,7 @@
             }
         },
         components: {
-            appEventCard
+            AppEventCard
         }
     }
 </script>

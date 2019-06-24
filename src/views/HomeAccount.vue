@@ -87,8 +87,8 @@
     import {mapState} from 'vuex'
     import {AUTH_LOGOUT, AUTH_LOGIN, MODIFY_USER} from "../store/actions.type";
     import {RESET_EVENTS_SUBSCRIBES} from "../store/mutations.type";
-    import AppRegistration from "../components/appRegistration";
-    import AppEventListCard from "../components/appEventListCard"
+    const AppRegistration = () => import("../components/appRegistration")
+    const AppEventListCard = () => import("../components/appEventListCard")
     import {loadMyEvents} from "../components/mixins/events";
 
     export default {

@@ -7,5 +7,13 @@ module.exports = {
     },
     themeColor: '#FFFFFF',
     msTileColor: '#FFFFFF'
+  },
+  productionSourceMap: false,
+  configureWebpack:{
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      }
+    }
   }
 }

@@ -17,7 +17,7 @@
                         v-list-tile-content
                             template
                                 v-list-tile-title.body-2.grey--text.text--darken-2 Сайт школы
-                                v-list-tile-sub-title.caption.grey--text.text--lighten-1 Оффициальный сайт "ЦРТДиЮ"
+                                v-list-tile-sub-title.caption.grey--text.text--lighten-1 Официальный сайт "ЦРТДиЮ"
                     v-divider
                     v-list-tile(avatar :to="{name:'app-info'}"  v-ripple="{class:'orange--text'}")
                         v-list-tile-avatar

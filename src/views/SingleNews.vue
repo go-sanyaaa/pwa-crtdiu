@@ -20,7 +20,7 @@
     import post from "../components/mixins/post"
     import {GET_RECORD} from "../store/actions.type";
     import {mapGetters, mapState} from "vuex"
-    import AppComments from "../components/appComments"
+    const AppComments = () => import("../components/appComments")
 
     export default {
         components: {AppComments},

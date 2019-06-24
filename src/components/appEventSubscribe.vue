@@ -21,7 +21,7 @@
                         v-btn.caption(color="green" depressed dark @click="subscribe") Подтверждаю
                 v-card(v-else)
                     v-toolbar(flat dark color="green")
-                        v-toolbar-title Вы учавствуете!
+                        v-toolbar-title Вы участвуете!
                     v-divider
                     v-card-text
                         | В данный момент вы зарегистрированны на мероприятие.
@@ -37,7 +37,7 @@
                     v-card-text
                         | Принять участие может только авторизованный пользователь!
                         br
-                        | Войдити в свою учетную запись или создйте новую.
+                        | Войдити в свою учетную запись или создайте новую.
                     v-divider(light)
                     v-card-actions
                         v-btn.caption(color="#FFF" flat @click="dialog = false") Отмена

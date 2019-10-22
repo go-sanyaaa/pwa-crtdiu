@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import VueCookie from 'vue-cookie'
 
-// const APP_DOMAIN = process.env.VUE_APP_DOMAIN
-const APP_DOMAIN = 'crtdiu-kir.ru'
+const APP_DOMAIN = process.env.VUE_APP_DOMAIN || 'localhost'
 
 Vue.use(VueCookie)
 

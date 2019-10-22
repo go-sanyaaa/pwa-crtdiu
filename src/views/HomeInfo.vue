@@ -11,7 +11,7 @@
         v-flex.xs12.sm8.offset-sm2.md6.offset-md3.px-0
             v-card.custom-elevation
                 v-list(two-line)
-                    v-list-tile(avatar href="https://crtdiu-app.ru/"  v-ripple="{class:'blue--text'}")
+                    v-list-tile(avatar href="https://crtdiu-kir.ru/"  v-ripple="{class:'blue--text'}")
                         v-list-tile-avatar
                             v-icon(outlined).blue.white--text language
                         v-list-tile-content

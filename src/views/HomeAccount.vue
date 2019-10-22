@@ -8,7 +8,7 @@
             v-card-actions
                 v-btn(color="primary" depressed block type="submit" form="form1") Войти
             v-card-actions
-                v-btn.caption(color="grey" flat) Забыли пароль?
+                v-btn.caption(color="grey" href="https://crtdiu-kir.ru/recovery/" flat) Забыли пароль?
                 v-spacer
                 app-registration(v-slot="{open}")
                     v-btn(color="accent" flat @click="open") Создать аккаунт
